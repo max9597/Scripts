@@ -792,14 +792,14 @@ Input_Roundify_4px.ScaleType = Enum.ScaleType.Slice
 Input_Roundify_4px.SliceCenter = Rect.new(4, 4, 4, 4)
 
 Windows.Name = "Windows"
-Windows.Parent = imgui
+Windows.Parent = img2ui
 Windows.BackgroundColor3 = Color3.new(1, 1, 1)
 Windows.BackgroundTransparency = 1
 Windows.Position = UDim2.new(0, 20, 0, 20)
 Windows.Size = UDim2.new(1, 20, 1, -20)
 
 --[[ Script ]]--
-script.Parent = imgui
+script.Parent = img2ui
 
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
