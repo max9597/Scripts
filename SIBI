@@ -1,0 +1,344 @@
+--SIBI private
+repeat wait() until game:IsLoaded() and game.Players.LocalPlayer.Character
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+
+local Window = Library.CreateLib("SIBI Private", "Midnight")
+
+
+--tabs
+local Self = Window:NewTab("Self")
+local Dupe = Window:NewTab("Dupe")
+local Other = Window:NewTab("Other")
+
+
+
+--sections
+local AxeDupe = Dupe:NewSection("Axe Dupe")
+local SlotDupe = Dupe:NewSection("Slot Dupe")
+local Movement = Self:NewSection("Movement")
+local World = Other:NewSection("World")
+
+--functions
+functions = {}
+local requirements={
+LP=game:GetService('Players').LocalPlayer
+}
+
+functions.AntiAFK=function()
+    if game.ReplicatedStorage.Transactions:FindFirstChild('AddLog')then
+        game.ReplicatedStorage.Transactions.AddLog:remove();
+    end
+    local scr=getsenv(game:GetService('Players').LocalPlayer.PlayerGui.LoadSaveGUI.LoadSaveClient.LocalScript)
+    scr.ban=function()return false end
+end
+spawn(AntiKick)
+
+functions.axedupe=function()
+local BaseC
+for i, v in pairs(game.Workspace.Properties:GetChildren()) do
+if v.Owner.Value == game.Players.LocalPlayer then
+BaseC = v.OriginSquare.CFrame + Vector3.new(0,5,0)
+end
+end
+if BaseC == nil then
+BaseC = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
+end
+if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Tool", true) then
+game:GetService("Players").LocalPlayer.Character.Humanoid:UnequipTools()
+wait(0.1)
+end
+game:GetService('Players').LocalPlayer.Character.Head:Destroy()
+wait(0.2)
+game:GetService('Players').LocalPlayer.Character:Destroy()
+wait(0.9)
+for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
+local A_1 = v
+local A_2 = "Drop tool"
+local A_3 = BaseC
+local Event = game:GetService("ReplicatedStorage").Interaction.ClientInteracted
+Event:FireServer(A_1, A_2, A_3)
+end
+print("Duped")
+end
+
+functions.dropaxes=function()
+for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
+local A_1 = v
+local A_2 = "Drop tool"
+local A_3 = BaseC
+local Event = game:GetService("ReplicatedStorage").Interaction.ClientInteracted
+Event:FireServer(A_1, A_2, A_3)
+end
+print("Dropped")   
+end
+
+functions.notify=function(title, text, duration)
+        game.StarterGui:SetCore(
+            'SendNotification',
+            {
+                Title=title,
+                Text=text,
+                Duration=duration;
+            }
+        );
+end;
+
+
+functions.SelfWl=function(value)
+    game:GetService('ReplicatedStorage').Interaction.ClientSetListPlayer:InvokeServer(game:GetService('Players').LocalPlayer.WhitelistFolder,game:GetService('Players').LocalPlayer,value);
+end;
+
+functions.getPlayersBase=function(plr)
+    for i,v in next,game:GetService('Workspace').Properties:GetChildren()do 
+        if v:IsA('Model') and tostring(v.Owner.Value)==plr then 
+            return v;
+        end;
+    end;
+    return false;
+end;
+
+functions.getFreeLand=function()
+    for _,v in next,game:GetService('Workspace').Properties:GetChildren()do 
+        if v.Owner.Value==nil then
+            return v;
+        end;
+    end;
+end;
+
+functions.FreeLand=function()
+    if functions.getPlayersBase(tostring(game:GetService('Players').LocalPlayer))then
+        return;
+    end;
+    local plot=functions.getFreeLand();
+    game:GetService'ReplicatedStorage'.PropertyPurchasing.SetPropertyPurchasingValue:InvokeServer(true);
+    game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientPurchasedProperty:FireServer(plot, plot.OriginSquare.CFrame.p);
+    game:GetService'ReplicatedStorage'.PropertyPurchasing.SetPropertyPurchasingValue:InvokeServer(false);
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(plot.OriginSquare.CFrame.p)+Vector3.new(0,5,0)
+end;
+
+functions.MaxLand=function(Plot)
+    if not functions.getPlayersBase(tostring(game:GetService('Players').LocalPlayer))then 
+        functions.FreeLand();
+    end;
+    if not Plot then 
+        Plot=functions.getPlayersBase(tostring(game:GetService('Players').LocalPlayer));
+    end;
+    local OriginSquare=Plot.OriginSquare;
+    local GetChildren=#Plot:GetChildren()
+    if GetChildren >=26 then
+        return;
+    end;
+    game:GetService'ReplicatedStorage'.PropertyPurchasing.SetPropertyPurchasingValue:InvokeServer(true);
+    game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Plot.OriginSquare.CFrame.p) + Vector3.new(0, 5, 0)
+    game:GetService'ReplicatedStorage'.PropertyPurchasing.SetPropertyPurchasingValue:InvokeServer(false);
+end;
+
+functions.SaveSelectedSlot=function()
+    if not functions.getPlayersBase(tostring(game:GetService('Players').LocalPlayer))then 
+        print('No Slot Loaded!');
+        return;
+    end;
+    if DupeEnabled then 
+        print('Error','Slot Saving is disabled!')
+        return;
+    end;
+    local success,Errormsg=pcall(function()game:GetService('ReplicatedStorage').LoadSaveRequests.RequestSave:InvokeServer(game:GetService('Players').LocalPlayer.CurrentSaveSlot.Value,game:GetService('Players').LocalPlayer)end);
+    if success then
+    else
+    end;
+end;
+
+MoneyDuping = false
+functions.LoadSelectedSlot=function(num)
+    if not game:GetService('ReplicatedStorage').LoadSaveRequests.ClientMayLoad:InvokeServer(game:GetService('Players').LocalPlayer)then
+        functions.notify('Error', 'Load is on cooldown. Waiting...', 4);
+        repeat
+            wait(5);
+        until game:GetService('ReplicatedStorage').LoadSaveRequests.ClientMayLoad:InvokeServer(game:GetService('Players').LocalPlayer);
+    end
+    if not MoneyDuping then 
+        game:GetService('ReplicatedStorage').LoadSaveRequests.RequestSave:InvokeServer(game:GetService('Players').LocalPlayer.CurrentSaveSlot.Value,game:GetService('Players').LocalPlayer)
+    end;
+    functions.fastLoadSelectedPlot(num,game:GetService('Players').LocalPlayer)
+    repeat wait() until game:GetService('Players').LocalPlayer.CurrentlySavingOrLoading.Value == false;
+    return true
+end;
+
+functions.fastLoadSelectedPlot=function(slotnum)
+    local scr=getsenv(game:GetService('Players').LocalPlayer.PlayerGui.PropertyPurchasingGUI.PropertyPurchasingClient);
+    local loadedSlot=nil;
+    if game:GetService('Players').LocalPlayer.CurrentSaveSlot.Value~=-1 and not MoneyDuping then 
+        game:GetService('ReplicatedStorage').LoadSaveRequests.RequestSave:InvokeServer(game:GetService('Players').LocalPlayer.CurrentSaveSlot.Value,game:GetService('Players').LocalPlayer)
+    end
+    spawn(function()
+        loadedSlot=game:GetService('ReplicatedStorage').LoadSaveRequests.RequestLoad:InvokeServer(slotnum,game:GetService('Players').LocalPlayer);
+    end);
+    game:GetService("ReplicatedStorage").LoadSaveRequests.GetTickCut:InvokeServer();
+    repeat wait()until game:GetService('Players').LocalPlayer.PlayerGui.PropertyPurchasingGUI.SelectPurchase.Visible;
+    for i=1,20 do 
+        wait(.15);
+        scr.selectionMade();
+    end;
+    repeat wait()until loadedSlot~=nil;
+    game:GetService('Players').LocalPlayer.CurrentSaveSlot.Value=slotnum;
+    return loadedSlot;
+end;
+
+functions.PlotLogic=function()
+    if game:GetService('Players').LocalPlayer.CurrentSaveSlot.Value== -1 then
+        return;                      
+    end;
+    if not game:GetService('ReplicatedStorage').LoadSaveRequests.ClientMayLoad:InvokeServer(game:GetService('Players').LocalPlayer)then
+        repeat
+            wait(5)
+        until game:GetService('ReplicatedStorage').LoadSaveRequests.ClientMayLoad:InvokeServer(game:GetService('Players').LocalPlayer);
+    end;
+    return true;
+end;
+
+functions.selfDupeCurrentSlot=function(slot)
+    if not slot then 
+        slot=game:GetService('Players').LocalPlayer.CurrentSaveSlot.Value;
+    end;
+    local connection,newPlot;
+    if selfDuping then
+        functions.notify('Error', 'Already Duping!',4);
+        return;
+    end;
+    if not DupeEnabled then 
+        functions.notify('Error','Disable slot saving is disabled!',4);
+        return;
+    end;
+    if not game:GetService('ReplicatedStorage').LoadSaveRequests.ClientMayLoad:InvokeServer(game:GetService('Players').LocalPlayer)then
+        functions.notify('Error', 'Load is on cooldown. Waiting...', 4);
+    end;
+    local success=functions.PlotLogic();
+    if success then 
+        selfDuping = true
+        functions.SaveSelectedSlot();
+        functions.SelfWl(true);
+        repeat wait() until game:GetService('Players').LocalPlayer.WhitelistFolder:FindFirstChild(tostring(game:GetService('Players').LocalPlayer))
+        spawn(function()
+            functions.LoadSelectedSlot(slot);
+        end);
+        local plot=functions.getPlayersBase(tostring(game:GetService('Players').LocalPlayer))
+        plot.Owner.Value=nil;
+        repeat wait()until game:GetService('Players').LocalPlayer.CurrentlySavingOrLoading.Value==false;
+        local newPlot;
+        repeat wait()newPlot=functions.getPlayersBase(tostring(game:GetService('Players').LocalPlayer));until newPlot;
+        newPlot=newPlot.OriginSquare;
+        functions.notify('SIBI','Basedropping Duped Items',4)
+        for _,item in next,workspace.PlayerModels:children()do 
+            if item:IsA('Model')and item:FindFirstChild('Owner')and tostring(item.Owner.Value)==tostring(game:GetService('Players').LocalPlayer)then 
+                if item:FindFirstChild('Main')then 
+                    if (item.Main.CFrame.p-newPlot.CFrame.p).Magnitude>100 then 
+                        ItemName=item:FindFirstChild('PurchasedBoxItemName')or item:FindFirstChild('ToolName')or item:FindFirstChild('BoxItemName')or item:FindFirstChild('ItemName')
+                        if ItemName then
+                            game.ReplicatedStorage.PlaceStructure.ClientPlacedStructure:FireServer(nil, CFrame.new(newPlot.CFrame.p+Vector3.new(4,1,4)),game:GetService('Players').LocalPlayer, nil, item, true)
+                            game:GetService('RunService').Heartbeat:wait();
+                        end;
+                    end;
+                end;
+            end;    
+        end;
+        DupeEnabled=false;
+        functions.SelfWl(false);
+        DupeEnabled=false
+        functions.SaveSelectedSlot();
+        DupeEnabled=true;
+        selfDuping = false
+    end;
+end;
+    
+local plrSpeed = 16
+spawn(function()
+    while wait() do
+      game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = plrSpeed
+    end
+end)
+
+loadstring([[
+    local args = {...} local functions,requirements = args[1],args[2]
+    local mt = getrawmetatable(game);
+    local old = mt.__namecall;
+    local protect = newcclosure or protect_function
+    setreadonly(mt, false);
+    mt.__namecall = protect(function(self, ...)
+        local method = getnamecallmethod();
+        local argss = {...};
+        if method == 'InvokeServer' and tostring(self) == 'RequestSave' then
+            if DupeEnabled then
+                return{false};
+            end;
+        elseif method=='FireServer'and tostring(self)=='CheckShip'then 
+            return;
+        elseif method=='InvokeServer'and tostring(self)=='GetTickCut'then
+            if not selfDuping then
+                for _,Model in next,workspace.PlayerModels:GetChildren()do 
+                    if Model:FindFirstChild'Owner'and tostring(Model.Owner.Value)==tostring(game:GetService('Players').LocalPlayer)then
+                        game:GetService('ReplicatedStorage').Interaction.DestroyStructure:FireServer(Model);
+                    end;
+                end;
+            end;setnamecallmethod(method)
+        elseif method == 'Kick' then
+            wait(9e9);
+            return;
+        end;
+        return old(self, unpack(argss));
+    end);
+    hookfunction(game:GetService('Players').LocalPlayer.Kick,protect(function() wait(9e9) end));
+]])(functions,requirements)
+
+--buttons
+AxeDupe:NewButton("Dupe", "Dupes your inventory (TO YOUR BASE)", function()
+    functions.axedupe()
+end)
+
+
+AxeDupe:NewButton("Drop axes", "Drops all of your axes", function()
+    functions.dropaxes()
+end)
+
+slott = 1
+SlotDupe:NewSlider("Slot to Load", "Loads slot", 6, 1, function(s) -- 500 (MaxValue) | 0 (MinValue)
+slott = s
+end)
+
+SlotDupe:NewButton("Load", "Loads slot", function()
+    functions.LoadSelectedSlot(slott)
+end)
+
+SlotDupe:NewButton("Free Land", "You will get a free land", function()
+    functions.FreeLand()
+end)
+
+SlotDupe:NewButton("Max Land", "You will get a fully expanded land", function()
+    functions.MaxLand()
+end)
+
+SlotDupe:NewToggle("Disable Saving", "Disable Saving slot you can dupe items", function(state)
+    DupeEnabled = state
+end)
+
+SlotDupe:NewButton("Center plot dupe", "You dupe center base part solo", function()
+    functions.selfDupeCurrentSlot()
+end)
+
+World:NewToggle("Walk on water", "Walk on water", function(state)
+        for i,v in next,game.Workspace.Water:GetChildren() do
+            if v.ClassName=='Part' then
+                v.CanCollide = state
+            end
+        end
+        for i,v in next,game:GetService('Workspace').Bridge.VerticalLiftBridge.WaterModel:GetChildren() do 
+            if v:IsA('BasePart') then 
+                v.CanCollide = state
+            end
+        end
+end)
+
+--sliders
+Movement:NewSlider("Speed", "Changes your speed", 500, 16, function(speed) -- 500 (MaxValue) | 0 (MinValue)
+plrSpeed = speed
+end)
