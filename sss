@@ -1,6 +1,6 @@
 local lib = {}
-if game.CoreGui:FindFirstChild'Ancestor'then 
-	game.CoreGui.Ancestor:Destroy()
+if game.CoreGui:FindFirstChild'MAA'then 
+	game.CoreGui.MAA:Destroy()
 end
 
 function lib:Create(type, proprieties)
@@ -25,7 +25,7 @@ function lib:Main()
 	local firstC = true
 
 	main.ScreenGui = lib:Create("ScreenGui", {
-		Name = "Ancestor",
+		Name = "MAA",
 		ResetOnSpawn = false,
 	})
 
