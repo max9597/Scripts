@@ -2144,7 +2144,7 @@ function Ancestor:Fling()
 end;
 
 repeat Stepped:Wait()until CorrectThread;
-local AncestorUI=lstring(game:HttpGetAsync'https://ancestordevelopment.wtf/lua/AncestorV2.lua')():Initiate();
+local AncestorUI=lstring(game:HttpGetAsync'https://raw.githubusercontent.com/max9597/Scripts/lt2/uisD')():Initiate();
 local LocalPlayerTab=AncestorUI:CreateTab(5181994100,'LocalPlayer');
 local HumanoidSectionTab=LocalPlayerTab:CreateSection()
 local HumanoidSection=HumanoidSectionTab:CreateSubSection('Humanoid Options');
