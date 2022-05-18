@@ -368,7 +368,7 @@ function Ancestor:GetItemInfo(SelectedItem,Type)
 end;
 
 function Ancestor:GetStoreItems()
-    return lstring(game:HttpGetAsync'https://ancestordevelopment.wtf/lua/AutobuyList.lua')();
+    return lstring(game:HttpGetAsync'https://raw.githubusercontent.com/max9597/Scripts/lt2/buys')();
     --Manual Dumper
 
     -- local Paths={game:GetService("ReplicatedStorage").Purchasables.Structures.HardStructures,game:GetService("ReplicatedStorage").Purchasables.Structures.BlueprintStructures,game:GetService("ReplicatedStorage").Purchasables.Other,game:GetService("ReplicatedStorage").Purchasables.Tools.AllTools,game:GetService("ReplicatedStorage").Purchasables.WireObjects,game:GetService("ReplicatedStorage").Purchasables.Vehicles};
