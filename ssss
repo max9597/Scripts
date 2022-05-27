@@ -815,7 +815,7 @@ function lib:Main()
 				end);
 
                 connections[#connections+1]=game.CoreGui.ChildRemoved:Connect(function(Child)
-                    if tostring(Child)=='Ancestor'then
+                    if tostring(Child)=='Ancestor1'then
                         for _,Connection in next,connections do 
                             Connection:Disconnect();
                         end;
@@ -1533,7 +1533,7 @@ function lib:Main()
 	end
 
 	main.Close.MouseButton1Click:Connect(function()
-		game.CoreGui.Ancestor:Destroy()
+		game.CoreGui.Ancestor1:Destroy()
 	end)
 
 	main.ScreenGui.Parent = game.CoreGui
