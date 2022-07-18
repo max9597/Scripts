@@ -1218,7 +1218,7 @@ function SolarisLib:New(Config)
 					end
 				end)
 				
-		function TextboxFrame:Remove()
+		function Textbox:Remove()
 			TextboxFrame:Destroy()
 			end
                 
