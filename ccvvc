@@ -971,8 +971,8 @@ function SolarisLib:New(Config)
 					return callback(Dropdown.Value)
 				end
 				
-                function Dropdown:Remove()
-					DropMain:Destroy()
+                function Dropdown:Remove1()
+					Dropdown:Destroy()
 				end
 
                 spawn(function()
@@ -1056,8 +1056,8 @@ function SolarisLib:New(Config)
 					return callback(Dropdown.Value)
 				end
 				
-                function Dropdown:Remove()
-					DropMain:Destroy()
+                function Dropdown:Remove1()
+					Dropdown:Destroy()
 				end
 
                 spawn(function()
@@ -1218,8 +1218,8 @@ function SolarisLib:New(Config)
 					end
 				end)
 				
-		function Textbox:Remove()
-			TextboxFrame:Destroy()
+		function Textbox:Remove1()
+			Textbox:Destroy()
 			end
                 
                 spawn(function()
