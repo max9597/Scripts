@@ -1,8 +1,11 @@
 --https://raw.githubusercontent.com/Stebulous/solaris-ui-lib/main/source.lua
 
--- This User Interface Library is brought to you by Solaris Software.
+if game.CoreGui:FindFirstChild("sdsandsnvin") then
+    game.CoreGui:FindFirstChild("sdsandsnvin"):Destroy()
+end
+
 local Solaris = Instance.new("ScreenGui")
-Solaris.Name = "dosage's solaris gui"
+Solaris.Name = "sdsandsnvin"
 Solaris.Parent = game.CoreGui
 Solaris.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -967,6 +970,10 @@ function SolarisLib:New(Config)
                     DropMain.Btn.Title.Text = text .. " - " .. val
 					return callback(Dropdown.Value)
 				end
+				
+                function Dropdown:Remove()
+					DropMain:Destroy()
+				end
 
                 spawn(function()
                     while wait() do
@@ -1047,6 +1054,10 @@ function SolarisLib:New(Config)
 					Dropdown.Value = val
                     DropMain.Btn.Title.Text = text .. " - " .. table.concat(Dropdown.Value, ", ")
 					return callback(Dropdown.Value)
+				end
+				
+                function Dropdown:Remove()
+					DropMain:Destroy()
 				end
 
                 spawn(function()
@@ -1206,6 +1217,10 @@ function SolarisLib:New(Config)
 						TextboxFrame.Box:ReleaseFocus()
 					end
 				end)
+				
+		function TextboxFrame:Remove()
+			TextboxFrame:Destroy()
+			end
                 
                 spawn(function()
                     while wait() do
