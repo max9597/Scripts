@@ -1,9 +1,3 @@
---https://raw.githubusercontent.com/Stebulous/solaris-ui-lib/main/source.lua
-
-if game.CoreGui:FindFirstChild("sdsandsnvin") then
-    game.CoreGui:FindFirstChild("sdsandsnvin"):Destroy()
-end
-
 local Solaris = Instance.new("ScreenGui")
 Solaris.Name = "sdsandsnvin"
 Solaris.Parent = game.CoreGui
