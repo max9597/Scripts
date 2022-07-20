@@ -1,1305 +1,3000 @@
-local Solaris = Instance.new("ScreenGui")
-Solaris.Name = "sdsandsnvin"
-Solaris.Parent = game.CoreGui
-Solaris.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-local NotificationHolder = Instance.new("ScreenGui")
-NotificationHolder.Name = "notiHolder"
-NotificationHolder.Parent = game.CoreGui
-NotificationHolder.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
-local LocalPlayer = game:GetService("Players").LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
-local http = game:GetService("HttpService")
-
-local WhitelistedMouse = {Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2,Enum.UserInputType.MouseButton3}
-local BlacklistedKeys = {Enum.KeyCode.Unknown,Enum.KeyCode.W,Enum.KeyCode.A,Enum.KeyCode.S,Enum.KeyCode.D,Enum.KeyCode.Up,Enum.KeyCode.Left,Enum.KeyCode.Down,Enum.KeyCode.Right,Enum.KeyCode.Slash,Enum.KeyCode.Tab,Enum.KeyCode.Backspace,Enum.KeyCode.Escape}
-
-local function CheckKey(tab, key)
-	for i, v in next, tab do
-		if v == key then
-			return true
-		end
-	end
-end
-
-
-
-local NotificationFrame = game:GetObjects("rbxassetid://6924028278")[1]
-NotificationFrame.ZIndex = 4
-NotificationFrame.Parent = NotificationHolder
-script = NotificationFrame.NotifScript
-local Notify = loadstring(NotificationFrame.NotifScript.Source)()
-script = oldScript
-
-local SolarisLib = {
-    Themes = {
-        Default = {
-            MainFrame = Color3.fromRGB(25, 25, 25),
-            TopBar = Color3.fromRGB(30, 30, 30),
-            TextColor =  Color3.fromRGB(255,255,255),
-            Menu = Color3.fromRGB(37, 37, 37),
-            TabToggled = Color3.fromRGB(43,43,43),
-            Button = Color3.fromRGB(30,30,30),
-            ButtonHold = Color3.fromRGB(31,31,31),
-            Toggle = Color3.fromRGB(30,30,30),
-            ToggleFrame = Color3.fromRGB(55,55,55),
-            ToggleToggled = Color3.fromRGB(22, 168, 76),
-            Slider = Color3.fromRGB(30,30,30),
-            SliderBar = Color3.fromRGB(25, 25, 25),
-            SliderInc = Color3.fromRGB(60, 60, 60),
-            Dropdown = Color3.fromRGB(30,30,30),
-            DropdownItem = Color3.fromRGB(30,30,30),
-            Textbox = Color3.fromRGB(30,30,30),
-            TextboxFrame = Color3.fromRGB(25, 25, 25),
-            Colorpicker = Color3.fromRGB(30,30,30),
-            Label = Color3.fromRGB(30,30,30),
-            Bind = Color3.fromRGB(30,30,30)
-        },
-        Discord = {
-            MainFrame = Color3.fromRGB(54,57,63),
-            TopBar = Color3.fromRGB(47,49,54),
-            TextColor =  Color3.fromRGB(255,255,255),
-            Menu = Color3.fromRGB(47,49,54),
-            TabToggled = Color3.fromRGB(54,57,63),
-            Button = Color3.fromRGB(88,101,242),
-            ButtonHold = Color3.fromRGB(71,82,196),
-            Toggle = Color3.fromRGB(47,49,54),
-            ToggleFrame = Color3.fromRGB(67,69,74),
-            ToggleToggled = Color3.fromRGB(22, 168, 76),
-            Slider = Color3.fromRGB(47,49,54),
-            SliderBar = Color3.fromRGB(42,44,49),
-            SliderInc = Color3.fromRGB(62,64,69),
-            Dropdown = Color3.fromRGB(47,49,54),
-            DropdownItem = Color3.fromRGB(47,49,54),
-            Textbox = Color3.fromRGB(47,49,54),
-            TextboxFrame = Color3.fromRGB(42,44,49),
-            Colorpicker = Color3.fromRGB(47,49,54),
-            Label = Color3.fromRGB(47,49,54),
-            Bind = Color3.fromRGB(47,49,54)
-        },
-        Blue = {
-            MainFrame = Color3.fromRGB(35, 35, 50),
-            TopBar = Color3.fromRGB(40, 40, 55),
-            TextColor =  Color3.fromRGB(255,255,255),
-            Menu = Color3.fromRGB(47, 47, 62),
-            TabToggled = Color3.fromRGB(53,53,68),
-            Button = Color3.fromRGB(40,40,55),
-            ButtonHold = Color3.fromRGB(41,41,56),
-            Toggle = Color3.fromRGB(40,40,55),
-            ToggleFrame = Color3.fromRGB(65,65,80),
-            ToggleToggled = Color3.fromRGB(64, 64, 120),
-            Slider = Color3.fromRGB(40,40,55),
-            SliderBar = Color3.fromRGB(35, 35, 50),
-            SliderInc = Color3.fromRGB(70, 70, 85),
-            Dropdown = Color3.fromRGB(40,40,55),
-            DropdownItem = Color3.fromRGB(40,40,55),
-            Textbox = Color3.fromRGB(40,40,55),
-            TextboxFrame = Color3.fromRGB(35, 35, 50),
-            Colorpicker = Color3.fromRGB(40,40,55),
-            Label = Color3.fromRGB(40,40,55),
-            Bind = Color3.fromRGB(40,40,55)
-        },
-        Red = {
-            MainFrame = Color3.fromRGB(50, 35, 35),
-            TopBar = Color3.fromRGB(55, 40, 40),
-            TextColor =  Color3.fromRGB(255,255,255),
-            Menu = Color3.fromRGB(62, 47, 47),
-            TabToggled = Color3.fromRGB(68,53,53),
-            Button = Color3.fromRGB(55,40,40),
-            ButtonHold = Color3.fromRGB(56,41,41),
-            Toggle = Color3.fromRGB(55,40,40),
-            ToggleFrame = Color3.fromRGB(80,65,65),
-            ToggleToggled = Color3.fromRGB(120, 64, 64),
-            Slider = Color3.fromRGB(55,40,40),
-            SliderBar = Color3.fromRGB(50, 35, 35),
-            SliderInc = Color3.fromRGB(85, 70, 70),
-            Dropdown = Color3.fromRGB(55,40,40),
-            DropdownItem = Color3.fromRGB(55,40,40),
-            Textbox = Color3.fromRGB(55,40,40),
-            TextboxFrame = Color3.fromRGB(50, 35, 35),
-            Colorpicker = Color3.fromRGB(55,40,40),
-            Label = Color3.fromRGB(55,40,40),
-            Bind = Color3.fromRGB(55,40,40)
-        },
-        Green = {
-            MainFrame = Color3.fromRGB(35, 50, 35),
-            TopBar = Color3.fromRGB(40, 55, 40),
-            TextColor =  Color3.fromRGB(255,255,255),
-            Menu = Color3.fromRGB(47, 62, 47),
-            TabToggled = Color3.fromRGB(53,68,53),
-            Button = Color3.fromRGB(40,55,40),
-            ButtonHold = Color3.fromRGB(41,56,41),
-            Toggle = Color3.fromRGB(40,55,40),
-            ToggleFrame = Color3.fromRGB(65,80,65),
-            ToggleToggled = Color3.fromRGB(64, 120, 64),
-            Slider = Color3.fromRGB(40,55,40),
-            SliderBar = Color3.fromRGB(35, 50, 35),
-            SliderInc = Color3.fromRGB(70, 85, 70),
-            Dropdown = Color3.fromRGB(40,55,40),
-            DropdownItem = Color3.fromRGB(40,55,40),
-            Textbox = Color3.fromRGB(40,55,40),
-            TextboxFrame = Color3.fromRGB(35, 50, 35),
-            Colorpicker = Color3.fromRGB(40,55,40),
-            Label = Color3.fromRGB(40,55,40),
-            Bind = Color3.fromRGB(40,55,40)
-        }
-    },
-    Settings = {
-        Theme = "Default",
-        ShowFriendsOnLaunch = true,
-        ShowMusicOnLaunch = false,
-        CloseBind = "RightControl"
-    },
-    Flags = {},
-    CurrentTab
-}
-
-
-
-local MainUI = game:GetObjects("rbxassetid://7835727566")[1]
-print("SolarisLib Loaded!")
-local function MakeDraggable(topbarobject, object) 
-    pcall(function()
-		local dragging, dragInput, mousePos, framePos = false
-		topbarobject.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
-				dragging = true
-				mousePos = input.Position
-				framePos = object.Position
-
-				input.Changed:Connect(function()
-					if input.UserInputState == Enum.UserInputState.End then
-						dragging = false
-					end
-				end)
-			end
-		end)
-		topbarobject.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement then
-				dragInput = input
-			end
-		end)
-		UserInputService.InputChanged:Connect(function(input)
-			if input == dragInput and dragging then
-				local delta = input.Position - mousePos
-				object.Position  = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
-			end
-		end)
-	end)
-end
-
-
-function Ripple(Object)
-	spawn(function()
-		local Circle = Instance.new("ImageLabel")
-		Circle.Parent = Object
-		Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Circle.BackgroundTransparency = 1.000
-		Circle.ZIndex = 10
-		Circle.Image = "rbxassetid://266543268"
-		Circle.ImageColor3 = Color3.fromRGB(210,210,210)
-		Circle.ImageTransparency = 0.8
-		Circle.Position = UDim2.new(0, Mouse.X - Circle.AbsolutePosition.X, 0, Mouse.Y - Circle.AbsolutePosition.Y)
-		local Size = Object.AbsoluteSize.X
-		TweenService:Create(Circle, TweenInfo.new(0.5), {Position = UDim2.fromScale(math.clamp(Mouse.X - Object.AbsolutePosition.X, 0, Object.AbsoluteSize.X)/Object.AbsoluteSize.X,Object,math.clamp(Mouse.Y - Object.AbsolutePosition.Y, 0, Object.AbsoluteSize.Y)/Object.AbsoluteSize.Y) - UDim2.fromOffset(Size/2,Size/2), ImageTransparency = 1, Size = UDim2.fromOffset(Size,Size)}):Play()
-		spawn(function()
-			wait(0.5)
-			Circle:Destroy()
-		end)
-	end)
-end
-
-function SolarisLib:Notification(title, desc)
-    Notify:New(title,desc)
-end    
-
-function SolarisLib:New(Config)
-    if not isfolder(Config.FolderToSave) then 
-        makefolder(Config.FolderToSave)
-    end
-    
-    if not isfolder(Config.FolderToSave .. "/configs") then 
-        makefolder(Config.FolderToSave .. "/configs")
-    end
-    
-    if not isfile(Config.FolderToSave .. "/settings.txt") then
-        local content = {}
-        for i,v in pairs(SolarisLib.Settings) do
-            content[i] = v
-        end
-        writefile(Config.FolderToSave .. "/settings.txt", tostring(http:JSONEncode(content)))
-    end    
-    SolarisLib.Settings = http:JSONDecode(readfile(Config.FolderToSave .. "/settings.txt"))
-
-    local closebindbinding = false
-    local fs = false
-    local tabcount = 0
-    local uitoggled = true
-    local tabmenutoggled = false
-    local TabPreset = game:GetObjects("rbxassetid://6958615840")[1]
-    local SectionPreset = game:GetObjects("rbxassetid://7121846230")[1]
-    local ContainerPreset = game:GetObjects("rbxassetid://7121886326")[1]
-    local MFrame = MainUI.MainFrame
-    MainUI.Parent = Solaris
-    MFrame.TopBar.TopFrameTitle.Text = Config.Name
-    MakeDraggable(MFrame.TopBar, MainUI) 
-    local oldScript = script
-
-    local MenuBtnPreset = game:GetObjects("rbxassetid://7037141226")[1]
-    local MusicBtn = MenuBtnPreset:Clone()
-    MusicBtn.Parent = MFrame.TopBar.ButtonHolder.MenuBtn.MenuFrame
-    MusicBtn.Position = UDim2.new(0,0,0,5)
-    MusicBtn.Text = "Music"
-    MusicBtn.MouseEnter:Connect(function() TweenService:Create(MusicBtn,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0}):Play() end)
-    MusicBtn.MouseLeave:Connect(function() TweenService:Create(MusicBtn,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.4}):Play() end)
-    local SettingsBtn = MenuBtnPreset:Clone()
-    SettingsBtn.Parent = MFrame.TopBar.ButtonHolder.MenuBtn.MenuFrame
-    SettingsBtn.Position = UDim2.new(0,0,0,25)
-    SettingsBtn.Text = "Settings"
-    SettingsBtn.MouseEnter:Connect(function() TweenService:Create(SettingsBtn,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0}):Play() end)
-    SettingsBtn.MouseLeave:Connect(function() TweenService:Create(SettingsBtn,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.4}):Play() end)
-
-
-    function MusicConstructor()
-        local abuttonhold = false
-        local playing = false
-        local MarketplaceService = game:GetService("MarketplaceService")
-        local MusicFrame, MusicPreset = game:GetObjects("rbxassetid://7296373622")[1], game:GetObjects("rbxassetid://7296615234")[1]
-        MusicFrame.Parent = Solaris
-        MusicFrame.ZIndex = 5
-        MusicFrame.Visible = SolarisLib.Settings.ShowMusicOnLaunch
-        MusicFrame.Frame.Title.Text = "Not Playing"
-        MusicFrame.Frame.Progress.ProgressFrame.Size = UDim2.new(0,0,1,0)
-        MusicFrame.Frame.AddBtn.AutoButtonColor = false
-
-        MakeDraggable(MusicFrame.Frame.TopBar,MusicFrame)
-        MusicFrame.Frame.TopBar.CloseBtn.MouseButton1Click:Connect(function()
-            MusicFrame.Visible = false
-        end)
-        MusicFrame.Frame.TopBar.CloseBtn.MouseEnter:Connect(function() TweenService:Create(MusicFrame.Frame.TopBar.CloseBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0}):Play() end)
-        MusicFrame.Frame.TopBar.CloseBtn.MouseLeave:Connect(function() TweenService:Create(MusicFrame.Frame.TopBar.CloseBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0.4}):Play() end)
-        MusicBtn.MouseButton1Click:Connect(function()
-            MusicFrame.Visible = not MusicFrame.Visible
-            MFrame.TopBar.ButtonHolder.MenuBtn.MenuFrame.Visible = false 
-        end)
-
-        local Sound = Instance.new("Sound")
-        Sound.Name = "Sound"
-        Sound.Parent = MusicFrame
-        Sound.Volume = 3
-        Sound:Stop()
-
-        local Sounds = {}
-        if not isfile(Config.FolderToSave .. "/music.txt") then writefile(Config.FolderToSave .. "/music.txt", tostring(http:JSONEncode({}))) end
-        Sounds = http:JSONDecode(readfile(Config.FolderToSave .. "/music.txt"))
-
-        function Save()
-            local content = {}
-            for i,v in pairs(Sounds) do
-                content[i] = v
-            end
-            writefile(Config.FolderToSave .. "/music.txt", tostring(http:JSONEncode(content)))
-        end    
-
-        local function PlaySong(id, title)
-            Sound:Stop()
-            playing = true
-            Sound.SoundId = "rbxassetid://" .. id
-            Sound:Resume()
-            MusicFrame.Frame.Play.Image = "http://www.roblox.com/asset/?id=6026663719"
-            MusicFrame.Frame.Title.Text = title
-        end    
-
-        local function RefreshList(list)
-            for i,v in next, MusicFrame.Frame.MusicList.Scroll:GetChildren() do
-                if v.Name == "Btn" then
-                    v:Destroy()
-                end    
-            end
-            for i,v in next, list do
-                local success, info = pcall(MarketplaceService.GetProductInfo, MarketplaceService, v)
-                if success and info.AssetTypeId == 3 then
-                    local Btn = MusicPreset:Clone()
-                    Btn.Parent = MusicFrame.Frame.MusicList.Scroll
-                    Btn.Title.Text = info.Name
-
-                    Btn.MouseButton1Click:Connect(function()
-                        PlaySong(v, info.Name)
-                    end)
-
-                    Btn.Delete.MouseButton1Click:Connect(function()
-                        for g,c in next, Sounds do
-                            if c == v then
-                                table.remove(Sounds, g)
-                            end    
-                        end    
-                        Save()
-                        Btn:Destroy()   
-                    end)
-                end
-            end    
-        end 
-        
-        MusicFrame.Frame.Play.MouseButton1Click:Connect(function()
-            playing = not playing
-            if playing then Sound:Pause() else Sound:Resume() end
-            MusicFrame.Frame.Play.Image = playing and "http://www.roblox.com/asset/?id=6026663699" or "http://www.roblox.com/asset/?id=6026663719"
-        end)
-
-        MusicFrame.Frame.AddBtn.MouseButton1Click:Connect(function()
-            local id = MusicFrame.Frame.AddSong.Text
-            if not table.find(Sounds, id) then
-                table.insert(Sounds, id)
-                Save()
-                RefreshList(Sounds)
-            end    
-        end)
-
-        MusicFrame.Frame.AddBtn.MouseEnter:Connect(function()
-            abuttonhold = true
-        end)
-
-        MusicFrame.Frame.AddBtn.MouseLeave:Connect(function()
-            abuttonhold = false
-        end)
-
-        RefreshList(Sounds)
-
-        game:GetService("RunService").RenderStepped:Connect(function()
-            local time = math.floor(Sound.TimePosition)
-            local timesecs = time % 60
-            local timemins = math.floor(time / 60)
-            if string.len(timesecs) < 2 then timesecs = "0" .. timesecs end
-            if string.len(timemins) < 2 then timemins = "0" .. timemins end
-            local timemax = math.floor(Sound.TimeLength)
-            local timemaxsecs = timemax % 60
-            local timemaxmins = math.floor(timemax / 60)
-            if string.len(timemaxsecs) < 2 then timemaxsecs = "0" .. timemaxsecs end
-            if string.len(timemaxmins) < 2 then timemaxmins = "0" .. timemaxmins end
-            MusicFrame.Frame.Timer1.Text = timemins .. ":" .. timesecs
-            MusicFrame.Frame.Timer2.Text = timemaxmins .. ":" .. timemaxsecs
-            MusicFrame.Frame.Progress.ProgressFrame.Size = UDim2.new(Sound.TimePosition / Sound.TimeLength,0,1,0)
-        end)
-
-        
-        spawn(function()
-            while wait() do
-                MusicFrame.Frame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].MainFrame
-                MusicFrame.Frame.TopBar.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TopBar
-                MusicFrame.Frame.TopBar.CloseBtn.Ico.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                MusicFrame.Frame.MusicList.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TopBar
-                MusicFrame.Frame.AddBtn.BackgroundColor3 = abuttonhold and SolarisLib.Themes[SolarisLib.Settings.Theme].ButtonHold or SolarisLib.Themes[SolarisLib.Settings.Theme].Button
-                MusicFrame.Frame.Progress.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Slider
-                MusicFrame.Frame.Progress.ProgressFrame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].SliderInc
-                MusicFrame.Frame.AddSong.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Textbox
-            end
-        end)
-    end  
-
-    function SettingsConstructor()
-        local Settings, SettingsFrame, TabPreset, ContainerPreset, TogglePreset, BindPreset, DropdownPreset, OptionPreset = {}, game:GetObjects("rbxassetid://7167491516")[1], game:GetObjects("rbxassetid://7177524915")[1], game:GetObjects("rbxassetid://7203599409")[1], game:GetObjects("rbxassetid://7208643984")[1], game:GetObjects("rbxassetid://7219277948")[1], game:GetObjects("rbxassetid://7435055269")[1], game:GetObjects("rbxassetid://7435032496")[1]
-        local fs = true
-        local SFrame = SettingsFrame.Main
-        SettingsFrame.Parent = MFrame
-        SFrame.TopBar.CloseBtn.MouseEnter:Connect(function() TweenService:Create(SFrame.TopBar.CloseBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0}):Play() end)
-        SFrame.TopBar.CloseBtn.MouseLeave:Connect(function() TweenService:Create(SFrame.TopBar.CloseBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0.4}):Play() end)
-        SettingsBtn.MouseButton1Click:Connect(function()
-            SettingsFrame.Visible = not SettingsFrame.Visible
-            MFrame.TopBar.ButtonHolder.MenuBtn.MenuFrame.Visible = false 
-        end)
-        SFrame.TopBar.CloseBtn.MouseButton1Click:Connect(function()
-            SettingsFrame.Visible = false
-        end)
-
-        function SaveSettings()
-            local content = {}
-            for i,v in pairs(SolarisLib.Settings) do
-                content[i] = v
-            end
-            writefile(Config.FolderToSave .. "/settings.txt", tostring(http:JSONEncode(content)))
-        end    
-
-        
-        spawn(function()
-            while wait() do
-                SFrame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].MainFrame
-                SFrame.TopBar.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TopBar
-                SFrame.TopBar.CloseBtn.Ico.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                SFrame.TopBar.TopFrameTitle.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                SFrame.TabHolder.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TopBar
-
-            end
-        end)
-
-        function Settings:Tab(text)
-            local Tab = TabPreset:Clone()
-            local Container = ContainerPreset:Clone()
-            Tab.Parent = SFrame.TabHolder
-            Tab.Text = text
-            Tab.Size = UDim2.new(0,Tab.TextBounds.X,1,0)
-            Container.Parent = SFrame.ContainerFolder
-            Container.Visible = false
-
-            if fs then
-                Tab.TextTransparency = 0
-                Container.Visible = true
-                fs = false
-            end    
-
-            Tab.MouseButton1Click:Connect(function()
-                for i,v in next, SFrame.TabHolder:GetChildren() do
-                    if v.Name == "Tab" then
-                        v.TextTransparency = 0.4
-                    end    
-                end      
-                for i,v in next, SFrame.ContainerFolder:GetChildren() do
-                    if v.Name == "Container" then
-                        v.Visible = false
-                    end    
-                end      
-                Tab.TextTransparency = 0      
-                Container.Visible = true
-            end)
-            local TabHold = {}
-            function TabHold:ToggleSetting(title, desc, def, path)
-                local value = SolarisLib.Settings[path] or def
-                local Toggle = TogglePreset:Clone()
-                Toggle.Parent = Container
-                Toggle.Title.Text = title
-                Toggle.Desc.Text = desc
-
-                local function Tween(val)
-                    TweenService:Create(Toggle.ToggleFrame.ToggleToggled.ToggleIco,TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency= val and 0 or 1}):Play()
-                    TweenService:Create(Toggle.ToggleFrame.ToggleToggled.ToggleIco,TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Size= val and UDim2.new(1,-2,1,-2) or UDim2.new(1,-6,1,-6)}):Play()
-                end    
-
-                local function SetValue(val)
-                    Tween(val)
-                    SolarisLib.Settings[path] = val
-                    value = val
-                    SaveSettings()
-                end    
-
-                Tween(value)
-
-                Toggle.MouseButton1Click:Connect(function()
-                    SetValue(not value)     
-                end)
-
-                spawn(function()
-                    while wait() do
-                        Toggle.ToggleFrame.ToggleToggled.BackgroundColor3 = value and SolarisLib.Themes[SolarisLib.Settings.Theme].ToggleToggled or SolarisLib.Themes[SolarisLib.Settings.Theme].MainFrame
-                        Toggle.ToggleFrame.BackgroundColor3 = value and SolarisLib.Themes[SolarisLib.Settings.Theme].ToggleToggled or SolarisLib.Themes[SolarisLib.Settings.Theme].ToggleFrame
-                        Toggle.Title.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-            end
-            function TabHold:BindSetting(title, desc, def, path)
-                local value = SolarisLib.Settings[path] or def
-                local Bind = BindPreset:Clone()
-                Bind.Parent = Container
-                Bind.Title.Text = title
-                Bind.Desc.Text = desc
-
-                function SetValue(val)
-                    closebindbinding = false
-                    value = val or value
-                    value = value.Name or value
-                    Bind.BText.Text = value
-                    SolarisLib.Settings[path] = value
-                    SaveSettings()
-                end    
-                SetValue(value)
-
-                Bind.InputEnded:Connect(function(Input)
-                    if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        if closebindbinding then return end
-                        closebindbinding = true
-                        Bind.BText.Text = "..."
-                    end
-                end)
-
-                UserInputService.InputBegan:Connect(function(Input)
-                    if UserInputService:GetFocusedTextBox() then return end
-                    if closebindbinding then
-                        local Key
-                        pcall(function()
-                            if not CheckKey(BlacklistedKeys, Input.KeyCode) then
-                                Key = Input.KeyCode
-                            end
-                        end)
-                        pcall(function()
-                            if CheckKey(WhitelistedMouse, Input.UserInputType) and not Key then
-                                Key = Input.UserInputType
-                            end
-                        end)
-                        Key = Key or value
-                        SetValue(Key)
-                    end
-                end)
-
-                spawn(function()
-                    while wait() do
-                        Bind.Desc.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                        Bind.BText.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                        Bind.Title.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-            
-            end    
-            function TabHold:Dropdown(title, desc, list, def, path)
-                local opened = false
-                local value = SolarisLib.Settings[path] or def
-                local Dropdown = DropdownPreset:Clone()
-                Dropdown.Parent = Container
-                Dropdown.Title.Text = title
-                Dropdown.Desc.Text = desc
-                Dropdown.Main.Current.Text = value
-
-                function Toggle()
-                    Dropdown.Main.Holder.Visible = opened
-                    Dropdown.Main.Holder.Size = opened and UDim2.new(1,0,0,Dropdown.Main.Holder.UIListLayout.AbsoluteContentSize.Y) or UDim2.new(1,0,0,0)
-                    if opened then
-                        if (Dropdown.Main.Holder.UIListLayout.AbsoluteContentSize.Y + Container.UIListLayout.AbsoluteContentSize.Y) > 190 then
-                            Container.CanvasSize = UDim2.new(0,0,0,Dropdown.Main.Holder.UIListLayout.AbsoluteContentSize.Y + Container.UIListLayout.AbsoluteContentSize.Y)
-                        end    
-                    else
-                        Container.CanvasSize = UDim2.new(0,0,0,Container.UIListLayout.AbsoluteContentSize.Y) 
-                    end
-                    TweenService:Create(Dropdown.Main.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Rotation = opened and 180 or 0}):Play()
-                end   
-                
-                Dropdown.InputEnded:Connect(function(Input)
-                    if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        opened = not opened
-                        Toggle()
-                    end
-                end)
-
-                local function AddOptions(opts)
-                    for _,option in pairs(opts) do
-                        local Option = OptionPreset:Clone()
-                        Option.Parent = Dropdown.Main.Holder
-                        Option.Text = option
-
-                        Option.MouseButton1Click:Connect(function()
-                            value = option
-                            SolarisLib.Settings[path] = value
-                            Dropdown.Main.Current.Text = value
-                            SaveSettings()
-                        end)
-
-                        spawn(function()
-                            while wait() do
-                               Option.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor       
-                            end
-                        end)
-                    end   
-                end    
-
-                spawn(function()
-                    while wait() do
-                        Dropdown.Main.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TopBar
-                        Dropdown.Main.Holder.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TopBar
-                    end
-                end)
-                AddOptions(list)
-            end
-            return TabHold
-        end   
-        
-        local general = Settings:Tab("General")
-        general:ToggleSetting("Show Music On Launch", "Shows the music menu when you load Snow Hub", true, "ShowMusicOnLaunch")
-        general:BindSetting("Close Bind", "Hides/Shows the main window when pressed.", Enum.KeyCode.RightControl, "CloseBind")
-        
-        local appearance = Settings:Tab("Appearance")
-        appearance:Dropdown("Theme", "The look of the user interface", {"Default", "Discord", "Red", "Green", "Blue"}, "Default", "Theme")
-
-    end 
-    MusicConstructor()
-    SettingsConstructor()
-
-    local function OpenTabMenu()
-        TweenService:Create(MFrame.TabMenu,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Position = UDim2.new(0,0,0,0)}):Play() 
-    end   
-    
-    local function CloseTabMenu()
-        TweenService:Create(MFrame.TabMenu,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Position = UDim2.new(-0.37, -8, 0, 0)}):Play() 
-    end 
-
-    MFrame.TopBar.TabListBtn.MouseButton1Click:Connect(function()
-        OpenTabMenu()
-    end)
-
-    MFrame.TabMenu.Menu.Top.MenuCloseBtn.MouseButton1Click:Connect(function()
-        CloseTabMenu()
-    end)
-
-    MFrame.TopBar.ButtonHolder.SearchBtn.MouseButton1Click:Connect(function()
-        MFrame.TopBar.ButtonHolder.SearchBtn.TextBox.Visible = not MFrame.TopBar.ButtonHolder.SearchBtn.TextBox.Visible
-        MFrame.TopBar.TopFrameTitle.Visible = not MFrame.TopBar.TopFrameTitle.Visible
-    end)
-
-    MFrame.TopBar.ButtonHolder.CloseBtn.MouseEnter:Connect(function() TweenService:Create(MFrame.TopBar.ButtonHolder.CloseBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0}):Play() end)
-    MFrame.TopBar.ButtonHolder.CloseBtn.MouseLeave:Connect(function() TweenService:Create(MFrame.TopBar.ButtonHolder.CloseBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0.4}):Play() end)
-    MFrame.TopBar.ButtonHolder.SearchBtn.MouseEnter:Connect(function() TweenService:Create(MFrame.TopBar.ButtonHolder.SearchBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0}):Play() end)
-    MFrame.TopBar.ButtonHolder.SearchBtn.MouseLeave:Connect(function() TweenService:Create(MFrame.TopBar.ButtonHolder.SearchBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0.4}):Play() end)
-    MFrame.TopBar.ButtonHolder.MenuBtn.MouseEnter:Connect(function() TweenService:Create(MFrame.TopBar.ButtonHolder.MenuBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0}):Play() end)
-    MFrame.TopBar.ButtonHolder.MenuBtn.MouseLeave:Connect(function() TweenService:Create(MFrame.TopBar.ButtonHolder.MenuBtn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0.4}):Play() end)
-    MFrame.TopBar.TabListBtn.MouseEnter:Connect(function() TweenService:Create(MFrame.TopBar.TabListBtn,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0}):Play() end)
-    MFrame.TopBar.TabListBtn.MouseLeave:Connect(function() TweenService:Create(MFrame.TopBar.TabListBtn,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency = 0.4}):Play() end)
-    MFrame.TopBar.ButtonHolder.MenuBtn.MouseButton1Click:Connect(function() MFrame.TopBar.ButtonHolder.MenuBtn.MenuFrame.Visible = not MFrame.TopBar.ButtonHolder.MenuBtn.MenuFrame.Visible end)
-
-    MFrame.TopBar.ButtonHolder.CloseBtn.MouseButton1Click:Connect(function()
-        uitoggled = not uitoggled
-        MainUI.Visible = uitoggled
-    end)
-
-
-    function SearchConstructor()
-        function StitchElements()
-            local elms = {}
-            for i,v in next, SolarisLib.CurrentTab:GetDescendants() do
-                if string.find(v.Name, "element") then
-                    table.insert(elms, v)        
-                end
-            end   
-            return elms
-        end    
-
-        MFrame.TopBar.ButtonHolder.SearchBtn.TextBox:GetPropertyChangedSignal("Text"):Connect(function()
-            for i,v in pairs(StitchElements()) do
-                if string.len(MFrame.TopBar.ButtonHolder.SearchBtn.TextBox.Text) >= 1 then
-                    if string.find(string.sub(v.Name:lower(),0,-8), MFrame.TopBar.ButtonHolder.SearchBtn.TextBox.Text:lower()) then
-                        v.Visible = true
-                    else
-                        v.Visible = false
-                    end 
-                else
-                    v.Visible = true                 
-                end
-            end    		
-        end)
-    end    
-
-    SearchConstructor()
-    
-
-	UserInputService.InputBegan:Connect(function(Input)
-		if (Input.KeyCode.Name == SolarisLib.Settings.CloseBind or Input.UserInputType.Name == SolarisLib.Settings.CloseBind) and not closebindbinding then
-            uitoggled = not uitoggled
-            MainUI.Visible = uitoggled
-		end
-	end)
-
-    spawn(function()
-        while wait() do
-            MFrame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].MainFrame
-            MFrame.TopBar.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TopBar
-            MFrame.TopBar.ButtonHolder.CloseBtn.Ico.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-            MFrame.TopBar.ButtonHolder.MenuBtn.Ico.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-            MFrame.TopBar.ButtonHolder.SearchBtn.Ico.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-            MFrame.TopBar.TabListBtn.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-            MFrame.TopBar.TopFrameTitle.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-            MFrame.TabMenu.Menu.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Menu
-            MFrame.TabMenu.Menu.Top.MenuCloseBtn.ImageLabel.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-            MFrame.TopBar.ButtonHolder.SearchBtn.TextBox.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].MainFrame
-            MFrame.TopBar.ButtonHolder.SearchBtn.TextBox.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-            MFrame.TopBar.ButtonHolder.SearchBtn.TextBox.PlaceholderColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-            MFrame.TopBar.ButtonHolder.MenuBtn.MenuFrame.Frame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TopBar
-        end
-    end)
-
-    function SolarisLib:LoadCfg(cfg)
-        local content = http:JSONDecode(cfg)
-        table.foreach(content, function(a,b)
-            if SolarisLib.Flags[a] then
-                spawn(function() SolarisLib.Flags[a]:Set(b) end)
-            else
-                warn("cfg loader - could not find", a ,b )
-            end
-        end)
-    end
-    
-    function SolarisLib:SaveCfg(name)
-        local content = {}
-        for i,v in pairs(SolarisLib.Flags) do
-            content[i] = v.Value
-        end
-        writefile(Config.FolderToSave .. "/configs/" .. name .. ".txt", tostring(http:JSONEncode(content)))
-    end
-    
-
-    local TabHolder = {}
-    function TabHolder:Tab(text)
-        local Tab = TabPreset:Clone()
-        Tab.AutoButtonColor = false
-        Tab.Parent = MFrame.TabMenu.Menu.Holder
-        Tab.Text =  text
-        Tab.TextSize = 14
-
-
-        local Container =  ContainerPreset:Clone()
-        Container.Parent = MFrame.ContainerFolder
-        Container.Visible = false
-
-        if fs == false then
-            fs = true
-            Container.Visible = true
-            Tab.UIPadding.PaddingLeft = UDim.new(0,10)
-            Tab.TextTransparency = 0
-            Tab.BackgroundTransparency = 0  
-            SolarisLib.CurrentTab = Container  
-        end    
-
-        spawn(function()
-            while wait() do
-                Tab.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                Tab.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TabToggled
-                Container.CanvasSize = UDim2.new(0,0,0,Container.UIListLayout.AbsoluteContentSize.Y + 26)
-            end
-        end)
-
-
-        
-        Tab.MouseButton1Click:Connect(function()
-            for i,v in next, MFrame.TabMenu.Menu.Holder:GetChildren() do
-                if v:IsA("TextButton") then
-                    TweenService:Create(v,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.4}):Play() 
-                    TweenService:Create(v,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play() 
-                    TweenService:Create(v.UIPadding,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{PaddingLeft = UDim.new(0,5)}):Play() 
-                end    
-                TweenService:Create(Tab,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0}):Play() 
-                TweenService:Create(Tab,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play() 
-                TweenService:Create(Tab.UIPadding,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{PaddingLeft = UDim.new(0,10)}):Play() 
-            end   
-            for i,v in next, MFrame.ContainerFolder:GetChildren() do
-                if v.Name == "Container" then
-                    v.Visible = false
-                end    
-                Container.Visible = true
-            end
-            tabtoggledname = Tab.Name
-            CloseTabMenu()
-        end)
-
-
-        local SectionHold = {}
-        function SectionHold:Section(text)
-            local Section = SectionPreset:Clone()
-            Section.Parent = Container
-            Section.SectionTitle.Text = text
-
-            spawn(function()
-                while wait() do
-                    Section.SectionTitle.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    Section.Size = UDim2.new(0.9,0,0,Section.UIListLayout.AbsoluteContentSize.Y)
-                end
-            end)
-            local ItemHold = {}
-            function ItemHold:Button(text,callback)
-                local Holding = false
-                local Button = game:GetObjects("rbxassetid://6937142338")[1]
-                Button.Parent = Section
-                Button.Name = text .. "element"
-                Button.ButtonText.Text = text
-                Button.ClipsDescendants = true
-                
-                Button.MouseButton1Click:Connect(function()
-                    callback()
-                    Ripple(Button)
-                end)
-                Button.MouseEnter:Connect(function()
-                    Holding = true
-                end)
-                Button.MouseLeave:Connect(function()
-                    Holding = false
-                end)
-
-                spawn(function()
-                    while wait() do
-                       Button.BackgroundColor3 = Holding and SolarisLib.Themes[SolarisLib.Settings.Theme].ButtonHold or SolarisLib.Themes[SolarisLib.Settings.Theme].Button
-                       Button.ButtonText.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-
-            end    
-            function ItemHold:Toggle(text,def,flag,callback)
-                local Toggle,ToggleMain = {Value = false}, game:GetObjects("rbxassetid://6963155498")[1]
-                ToggleMain.Parent = Section
-                ToggleMain.ToggleText.Text = text
-                ToggleMain.Name = text .. "element"
-
-                function Toggle:Set(value)
-					Toggle.Value = value
-                    TweenService:Create(ToggleMain.ToggleFrame.ToggleToggled.ToggleIco,TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{ImageTransparency= Toggle.Value and 0 or 1}):Play()
-                    TweenService:Create(ToggleMain.ToggleFrame.ToggleToggled.ToggleIco,TweenInfo.new(.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Size= Toggle.Value and UDim2.new(1,-2,1,-2) or UDim2.new(1,-6,1,-6)}):Play()
-					return callback(Toggle.Value)
-				end
-				
-				ToggleMain.MouseButton1Click:Connect(function()
-					Toggle.Value = not Toggle.Value
-					Toggle:Set(Toggle.Value)           
-				end)
-
-                spawn(function()
-                    while wait() do
-                        ToggleMain.ToggleFrame.ToggleToggled.BackgroundColor3 = Toggle.Value and SolarisLib.Themes[SolarisLib.Settings.Theme].ToggleToggled or SolarisLib.Themes[SolarisLib.Settings.Theme].Toggle
-                        ToggleMain.ToggleFrame.BackgroundColor3 = Toggle.Value and SolarisLib.Themes[SolarisLib.Settings.Theme].ToggleToggled or SolarisLib.Themes[SolarisLib.Settings.Theme].ToggleFrame
-                        ToggleMain.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Toggle
-                        ToggleMain.ToggleText.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-
-				Toggle:Set(def)
-                SolarisLib.Flags[flag] = Toggle
-                return Toggle
-            end    
-            function ItemHold:Slider(text,min,max,start,inc,flag,callback)
-                local Slider,SliderMain = {Value = start}, game:GetObjects("rbxassetid://6967573727")[1]
-                SliderMain.Parent = Section
-                SliderMain.SliderText.Text = text
-                SliderMain.Name = text .. "element"
-                local dragging = false
-
-                local function move(Input)
-                    local XSize = math.clamp((Input.Position.X - SliderMain.SliderFrame.AbsolutePosition.X) / SliderMain.SliderFrame.AbsoluteSize.X, 0, 1)
-                    local Increment = inc and (max / ((max - min) / (inc * 4))) or (max >= 50 and max / ((max - min) / 4)) or (max >= 25 and max / ((max - min) / 2)) or (max / (max - min))
-                    local SizeRounded = UDim2.new((math.round(XSize * ((max / Increment) * 4)) / ((max / Increment) * 4)), 0, 1, 0) 
-                    TweenService:Create(SliderMain.SliderFrame.SliderCurrentFrame,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Size = SizeRounded}):Play() 
-                    local Val = math.round((((SizeRounded.X.Scale * max) / max) * (max - min) + min) * 20) / 20
-                    SliderMain.SliderVal.Text = tostring(Val)
-                    Slider.Value = Val
-                    callback(Slider.Value)
-				end
-				SliderMain.SliderFrame.InputBegan:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = true end end)
-				SliderMain.SliderFrame.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
-				game:GetService("UserInputService").InputChanged:Connect(function(input) if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then move(input) end end)
-
-                function Slider:Set(val)
-                    local a = tostring(val and (val / max) * (max - min) + min) or 0
-					SliderMain.SliderVal.Text = tostring(a)
-                    SliderMain.SliderFrame.SliderCurrentFrame.Size = UDim2.new((val or 0) / max, 0, 1, 0)
-                    Slider.Value = val
-					return callback(Slider.Value)
-				end	
-
-                spawn(function()
-                    while wait() do
-                       SliderMain.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Slider
-                       SliderMain.SliderFrame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].SliderBar
-                       SliderMain.SliderFrame.SliderCurrentFrame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].SliderInc
-                       SliderMain.SliderText.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                       SliderMain.SliderVal.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-
-
-                Slider:Set(start)
-                SolarisLib.Flags[flag] = Slider
-                return Slider
-            end    
-            function ItemHold:Dropdown(text,list,def,flag,callback)
-                local Dropdown,DropMain,OptionPreset = {Value = nil, Toggled = false, Options = list}, game:GetObjects("rbxassetid://7027964359")[1], game:GetObjects("rbxassetid://7021432326")[1]
-                DropMain.Parent = Section
-                DropMain.Btn.Title.Text = text
-                DropMain.Name = text .. "element"
-                
-
-                local function ToggleDrop()
-                    Dropdown.Toggled = not Dropdown.Toggled
-                    DropMain.Holder.Size = Dropdown.Toggled and UDim2.new(1,0,0,6+DropMain.Holder.Layout.AbsoluteContentSize.Y) or UDim2.new(1,0,0,0)
-                    TweenService:Create(DropMain,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Size = Dropdown.Toggled and UDim2.new(1,0,0,38+DropMain.Holder.Layout.AbsoluteContentSize.Y) or UDim2.new(1,0,0,32)}):Play() 
-                    TweenService:Create(DropMain.Btn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Rotation = Dropdown.Toggled and 180 or 0}):Play() 
-                    DropMain.Holder.Visible = Dropdown.Toggled
-                end  
-
-                local function AddOptions(opts)
-                    for _,option in pairs(opts) do
-                        local Option = OptionPreset:Clone()
-                        Option.Parent = DropMain.Holder
-                        Option.ItemText.Text = option
-                        Option.ClipsDescendants = true
-
-                        Option.MouseButton1Click:Connect(function()
-                            Dropdown.Value = option
-                            DropMain.Btn.Title.Text = text .. " - " .. option
-                            Ripple(Option)
-                            return callback(Dropdown.Value)
-                        end)
-
-                        spawn(function()
-                            while wait() do
-                               Option.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].DropdownItem
-                               DropMain.Btn.Title.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                            end
-                        end)
-                    end   
-                end    
-
-                function Dropdown:Refresh(opts,del)
-                    if del then
-                        for _,v in pairs(DropMain.Holder:GetChildren()) do
-                            if v:IsA"TextButton" then
-								v:Destroy()
-                                DropMain.Holder.Size = Dropdown.Toggled and UDim2.new(1,0,0,6+DropMain.Holder.Layout.AbsoluteContentSize.Y) or UDim2.new(1,0,0,0)
-                                DropMain.Size = Dropdown.Toggled and UDim2.new(1,0,0,38+DropMain.Holder.Layout.AbsoluteContentSize.Y) or UDim2.new(1,0,0,32)
-							end
-                        end    
-                    end    
-                    AddOptions(opts)
-                end    
-             
-
-                DropMain.Btn.MouseButton1Click:Connect(function()
-                    ToggleDrop()
-                end)
-
-                function Dropdown:Set(val)
-					Dropdown.Value = val
-                    DropMain.Btn.Title.Text = text .. " - " .. val
-					return callback(Dropdown.Value)
-				end
-				
-                function Dropdown:Remove1()
-					Dropdown:Destroy()
-				end
-
-                spawn(function()
-                    while wait() do
-                       DropMain.Btn.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Dropdown
-                       DropMain.Btn.Title.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                       DropMain.Btn.Ico.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-
-                Dropdown:Refresh(list,false)
-                Dropdown:Set(def)
-                SolarisLib.Flags[flag] = Dropdown
-                return Dropdown
-            end   
-            function ItemHold:MultiDropdown(text,list,def,flag,callback)
-                local Dropdown,DropMain,OptionPreset = {Value = {}, Toggled = false, Options = list}, game:GetObjects("rbxassetid://7027964359")[1], game:GetObjects("rbxassetid://7021432326")[1]
-                DropMain.Parent = Section
-                DropMain.Btn.Title.Text = text
-                DropMain.Name = text .. "element"
-                
-
-                local function ToggleDrop()
-                    Dropdown.Toggled = not Dropdown.Toggled
-                    DropMain.Holder.Size = Dropdown.Toggled and UDim2.new(1,0,0,6+DropMain.Holder.Layout.AbsoluteContentSize.Y) or UDim2.new(1,0,0,0)
-                    TweenService:Create(DropMain,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Size = Dropdown.Toggled and UDim2.new(1,0,0,38+DropMain.Holder.Layout.AbsoluteContentSize.Y) or UDim2.new(1,0,0,32)}):Play() 
-                    TweenService:Create(DropMain.Btn.Ico,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Rotation = Dropdown.Toggled and 180 or 0}):Play() 
-                    DropMain.Holder.Visible = Dropdown.Toggled
-                end  
-
-                local function AddOptions(opts)
-                    for _,option in pairs(opts) do
-                        local Option = OptionPreset:Clone()
-                        Option.Parent = DropMain.Holder
-                        Option.ItemText.Text = option
-                        Option.ClipsDescendants = true
-
-                        Option.MouseButton1Click:Connect(function()
-                            if table.find(Dropdown.Value, option) then				
-								table.remove(Dropdown.Value, table.find(Dropdown.Value, option))
-								DropMain.Btn.Title.Text = text .. " - " .. table.concat(Dropdown.Value, ", ")
-								callback(Dropdown.Value)
-							else
-								table.insert(Dropdown.Value, option)
-								DropMain.Btn.Title.Text = text .. " - " .. table.concat(Dropdown.Value, ", ")
-								callback(Dropdown.Value)
-							end
-                            Ripple(Option)
-                        end)
-
-                        spawn(function()
-                            while wait() do
-                               Option.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].DropdownItem
-                               DropMain.Btn.Title.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                            end
-                        end)
-                    end   
-                end    
-
-                function Dropdown:Refresh(opts,del)
-                    if del then
-                        for _,v in pairs(DropMain.Holder:GetChildren()) do
-                            if v:IsA"TextButton" then
-								v:Destroy()
-                                DropMain.Holder.Size = Dropdown.Toggled and UDim2.new(1,0,0,6+DropMain.Holder.Layout.AbsoluteContentSize.Y) or UDim2.new(1,0,0,0)
-                                DropMain.Size = Dropdown.Toggled and UDim2.new(1,0,0,38+DropMain.Holder.Layout.AbsoluteContentSize.Y) or UDim2.new(1,0,0,32)
-							end
-                        end    
-                    end    
-                    AddOptions(opts)
-                end    
-             
-
-                DropMain.Btn.MouseButton1Click:Connect(function()
-                    ToggleDrop()
-                end)
-
-                function Dropdown:Set(val)
-					Dropdown.Value = val
-                    DropMain.Btn.Title.Text = text .. " - " .. table.concat(Dropdown.Value, ", ")
-					return callback(Dropdown.Value)
-				end
-				
-                function Dropdown:Remove1()
-					Dropdown:Destroy()
-				end
-
-                spawn(function()
-                    while wait() do
-                       DropMain.Btn.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Dropdown
-                       DropMain.Btn.Title.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                       DropMain.Btn.Ico.ImageColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-
-                Dropdown:Refresh(list,false)
-                Dropdown:Set(def)
-                SolarisLib.Flags[flag] = Dropdown
-                return Dropdown
-            end    
-            function ItemHold:Colorpicker(text,preset,flag,callback)
-                local ColorH, ColorS, ColorV = 1, 1, 1
-                local ColorPicker, ColorPreset, DragPreset = {Value = preset, Toggled = false}, game:GetObjects("rbxassetid://7329998014")[1]
-                ColorPreset.Hue.Visible, ColorPreset.Color.Visible = ColorPicker.Toggled, ColorPicker.Toggled
-                ColorPreset.Parent = Section
-                ColorPreset.Btn.Colorpicker.Text = text
-                ColorPreset.Name = text .. "element"
-                ColorPreset.Btn.Box.BackgroundColor3 = preset
-                ColorPreset.Hue.HueGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 4)), ColorSequenceKeypoint.new(0.20, Color3.fromRGB(234, 255, 0)), ColorSequenceKeypoint.new(0.40, Color3.fromRGB(21, 255, 0)), ColorSequenceKeypoint.new(0.60, Color3.fromRGB(0, 255, 255)), ColorSequenceKeypoint.new(0.80, Color3.fromRGB(0, 17, 255)), ColorSequenceKeypoint.new(0.90, Color3.fromRGB(255, 0, 251)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 4))}
-                local Color = ColorPreset.Color
-                local Hue = ColorPreset.Hue
-                local HueSelection = ColorPreset.Hue.HueSelection
-                local ColorSelection = ColorPreset.Color.ColorSelection
-                
-                function UpdateColorPicker()
-                    ColorPreset.Btn.Box.BackgroundColor3 = Color3.fromHSV(ColorH, ColorS, ColorV)
-                    Color.BackgroundColor3 = Color3.fromHSV(ColorH, 1, 1)
-                    pcall(callback, ColorPreset.Btn.Box.BackgroundColor3)
-                end
-    
-                ColorPreset.Btn.MouseButton1Click:Connect(function()
-                    ColorPicker.Toggled = not ColorPicker.Toggled
-                    TweenService:Create(ColorPreset,TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Size = ColorPicker.Toggled and UDim2.new(1,0,0,120) or UDim2.new(1,0,0,32)}):Play() 
-                    ColorPreset.Hue.Visible, ColorPreset.Color.Visible = ColorPicker.Toggled, ColorPicker.Toggled
-                end)
-
-                ColorH = 1 - (math.clamp(HueSelection.AbsolutePosition.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y) / Hue.AbsoluteSize.Y)
-			    ColorS = (math.clamp(ColorSelection.AbsolutePosition.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) / Color.AbsoluteSize.X)
-                ColorV = 1 - (math.clamp(ColorSelection.AbsolutePosition.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) / Color.AbsoluteSize.Y)
-
-                ColorPreset.Btn.Box.BackgroundColor3 = preset
-                Color.BackgroundColor3 = preset
-                pcall(callback, ColorPreset.Btn.Box.BackgroundColor3)
-
-                Color.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        if ColorInput then
-                            ColorInput:Disconnect()
-                        end
-                        ColorInput = RunService.RenderStepped:Connect(function()
-                            local ColorX = (math.clamp(Mouse.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) / Color.AbsoluteSize.X)
-                            local ColorY = (math.clamp(Mouse.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) / Color.AbsoluteSize.Y)
-                            ColorSelection.Position = UDim2.new(ColorX, 0, ColorY, 0)
-                            ColorS = ColorX
-                            ColorV = 1 - ColorY
-                            UpdateColorPicker()
-                        end)
-                    end
-                end)
-
-                Color.InputEnded:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        if ColorInput then
-                            ColorInput:Disconnect()
-                        end
-                    end
-                end)
-
-                Hue.InputBegan:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        if HueInput then
-                            HueInput:Disconnect()
-                        end
-    
-                        HueInput = RunService.RenderStepped:Connect(function()
-                            local HueY = (math.clamp(Mouse.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y) / Hue.AbsoluteSize.Y)
-    
-                            HueSelection.Position = UDim2.new(0.48, 0, HueY, 0)
-                            ColorH = 1 - HueY
-    
-                            UpdateColorPicker(true)
-                        end)
-                    end
-                end)
-    
-                Hue.InputEnded:Connect(function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        if HueInput then
-                            HueInput:Disconnect()
-                        end
-                    end
-                end)
-
-                spawn(function()
-                    while wait() do
-                       ColorPreset.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Colorpicker
-                       ColorPreset.Btn.Colorpicker.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-
-                return ColorPicker
-            end
-            function ItemHold:Label(text)
-                local Label, LabelFrame = {}, game:GetObjects("rbxassetid://7032552322")[1]
-                LabelFrame.Parent = Section
-                LabelFrame.Title.Text = text
-                LabelFrame.Name = text .. "element"
-
-                function Label:Set(tochange)
-                    LabelFrame.Title.Text = tochange
-                    LabelFrame.Name = text .. "element"
-                end    
-
-                
-                spawn(function()
-                    while wait() do
-                       LabelFrame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Label
-                       LabelFrame.Title.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-
-                return Label
-            end
-            function ItemHold:Textbox(text,disappear,callback)
-                local Textbox, TextboxFrame = {}, game:GetObjects("rbxassetid://7147292392")[1]
-                TextboxFrame.Parent = Section
-                TextboxFrame.Title.Text = text
-                TextboxFrame.Name = text .. "element"
-
-                TextboxFrame.Box.Changed:Connect(function()
-                    TextboxFrame.Box.Size = UDim2.new(0,TextboxFrame.Box.TextBounds.X + 16,0,22)
-                end)
-                TextboxFrame.Box.PlaceholderText = "                  "
-
-                TextboxFrame.InputBegan:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        TextboxFrame.Box:CaptureFocus()
-					end
-				end)
-				
-
-                TextboxFrame.Box.FocusLost:Connect(function()
-                    local txt = TextboxFrame.Box.Text
-                    if disappear then
-                        TextboxFrame.Box.Text = ""
-                    end  
-                    return callback(txt)
-				end)
-
-                UserInputService.InputBegan:Connect(function(input)
-					if input.KeyCode == Enum.KeyCode.Escape and TextboxFrame.Box:IsFocused() then
-						TextboxFrame.Box:ReleaseFocus()
-					end
-				end)
-				
-		function Textbox:Remove1()
-			Textbox:Destroy()
-			end
-                
-                spawn(function()
-                    while wait() do
-                       TextboxFrame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Textbox
-                       TextboxFrame.Title.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                       TextboxFrame.Box.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextboxFrame
-                       TextboxFrame.Box.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-                return Textbox
-            end    
-            function ItemHold:Bind(text,preset,holdmode,flag,callback)
-                local Bind, BindFrame = {Value, Binding = false, Holding = false}, game:GetObjects("rbxassetid://7126874744")[1]
-                BindFrame.Parent = Section
-                BindFrame.Title.Text = text
-                BindFrame.Name = text .. "element"
-
-                
-
-                BindFrame.InputEnded:Connect(function(Input)
-                    if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        if Bind.Binding then return end
-                        Bind.Binding = true
-                        BindFrame.BText.Text = "..."
-                    end
-                end)
-
-                UserInputService.InputBegan:Connect(function(Input)
-                    if UserInputService:GetFocusedTextBox() then return end
-                    if (Input.KeyCode.Name == Bind.Value or Input.UserInputType.Name == Bind.Value) and not Bind.Binding then
-                        if holdmode then
-                            Holding = true
-                            callback(Holding)
-                        else
-                            callback()
-                        end
-                    elseif Bind.Binding then
-                        local Key
-                        pcall(function()
-                            if not CheckKey(BlacklistedKeys, Input.KeyCode) then
-                                Key = Input.KeyCode
-                            end
-                        end)
-                        pcall(function()
-                            if CheckKey(WhitelistedMouse, Input.UserInputType) and not Key then
-                                Key = Input.UserInputType
-                            end
-                        end)
-                        Key = Key or Bind.Value
-                        Bind:Set(Key)
-                    end
-                end)
-
-                UserInputService.InputEnded:Connect(function(Input)
-                    if Input.KeyCode.Name == Bind.Value or Input.UserInputType.Name == Bind.Value then
-                        if holdmode and Holding then
-                            Holding = false
-                            callback(Holding)
-                        end
-                    end
-                end)
-
-                function Bind:Set(key)
-                    self.Binding = false
-                    self.Value = key or self.Value
-                    self.Value = self.Value.Name or self.Value
-                    BindFrame.BText.Text = self.Value
-				end
-
-                spawn(function()
-                    while wait() do
-                       BindFrame.BackgroundColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].Bind
-                       BindFrame.Title.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                       BindFrame.BText.TextColor3 = SolarisLib.Themes[SolarisLib.Settings.Theme].TextColor
-                    end
-                end)
-
-				Bind:Set(preset)
-                SolarisLib.Flags[flag] = Bind
-                return Bind
-            end    
-            return ItemHold
-        end    
-        return SectionHold
-    end 
-    return TabHolder
-end    
-return SolarisLib
+--[[
+    Obfuscated using Obfuscator x v0.2 by Unknown Guy
+]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+return(function(...)local mr={"mtB2mtJAnVlrnE==","Q0mc6Inr";"erbrTUe=","ePix6VlaZtmh6VgMnPgMXVrone==","3Pa9nVmXQ0B+QIu9Q0m+GIS=","qPm+ZXiM6K==","eVlFQVmNWPgS";"Q0i5GODxnObRnhfFpxGgD/QaDxyIy/Q=","XVm9Q0DfeAb+";"Q0i5GODxnObRnhfFpxQsyqSsDxQgDhK=";"mtB23tJ8ntms";"yE==";"PSr+ntm5e0mfGOnR6Ij=";"XtJxWObR6V5=";"3Pa9nVmyGPir6E==";"bPBxWPgAXIbg6tX=","XVJa60binE==","qPJaQVmNZObM6V5x";"qOmxWPy=";"qPm+ZXnsGPar";"eV9960ZrnE==","3trSnOyFXV9FZIyKZt9rjta9WP5KZVr+ntJIjUZfnP5KQUirQIDrnN5=";"qtBg6ImM","q0JMjBu8GOrR60Q=";"pIDrZUbR60ZxpAb5ZE==";"e0r+ntr+nH==";"Q0i5GODxnObRnhfFpxQHy/vMyxjxy/G=";"XUiFnIirQIDtQ0Bcne==";"e0lane==";"bUiFQtbFZVgiZtmc";"qtB2nPH=","3PDF";"mODrQSr+QUmMmUrHne==","XAm+XVmsZ0r/ne==";"bPgS";"mt9rjtlF6V8K6VGKZt9rjUmxnOjKWPgMnOi0GPDr";"mtJH","mtJAnVlrnE==","eImsQ0m+ZE==","eAmMZtJ+","mtJHe0Bs";"60mI","mPgd60JI6K==","ePbSXVJ+nH==";"mtm5ZvDF6tJs","GVl96OE=";"Q0i5GODxnObRnhfFpxGgD/ylDqXM4qK=";"e0r+nE==";"ePbSeAb+","XVmMZtr+nIy=";"XtBSntr+nMlrnAe=";"eVJ86IiqnPlrGIbR6V5=";"QVbxGPgSQVgVWP5=";"ePix6VlaZtmqWORr";"bVmMXUiFnUm/Zvr+n0z=";"Q0i5GODxnObRnhfFpxQ5yxXIy/QaD/G=";"eAmMZtJ+3tJ8nE==";"mtm5ZBbsGPgxQtBsnPg/Te==","3Pa9nVX=","qPBR6SnsGPar","eImsQ0m+ZBb9GK==";"nAiF6miUeK==";"mtm5ZtiFTE==","bVm+nOi96E==","WPgxnOiM";"Q0i5GODxnObRnhfFpxQxy/Sg4qKHyqe=","mtm5ZvDF6tJsyH==","XVlRntmseImsQ0m+ZvnsGPar";"PSr+ntm5";"n0lF6Ij=","nPlr6Pm+ZE==","q0Bcne==","ePix6VlaZtme6IDRZtrF6K==";"X0rAWUe=","Q0i5GODxnObRnhfFpxQly/G5DxeIDhe=","Q0i5GODxnObRnhfFpH==","XtBsnPgM";"Q0i5GODxnObRnhfFpxGgy/eHy/KsDxK=";"Q0Ja60e=";"qPm+ZXD86IDreAb+","eVB+Z0BxXVrone==","Q0i5GODxnObRnhfFpxQHyxQlDhvsy/G=","qIuMWPJ+QH==","qPJaQVmNZObM6V5s","Q0i5GODxnObRnhfFpxQlD/QM4qvayqG=","Q0i5GODxnObRnhfFpxQly/v5DhGsyxE=","ee==","GVnAjtlFGPbrQ2EcjtDFZPlSjtgFZNu0WPgS";"pNE=","btmxGH==";"XVrone==";"m0rxWPi8ne==";"mXryWODMqtBg6ImM";"Q0i5GODxnObRnhfFpxGgyxQlDhjxyxK=";"3tJ8ntr+nH==";"mtB2qtrxZviM6K==","b0l9nIy=";"Q0i5GODxnObRnhfFpxQsyhya4qSMyhS=","nAiF6mD/GPlr","Q0i5GODxnObRnhfFpxQMyxXHDqXsD/S=","q0JMWPnqGIiRQUe=";"3PgHZObhWtB+nVmS","4K==";"qPJaQVmD6Inr6Pm+ZE==";"pVaaQVr/pAb5ZE==";"XVl9QVK=";"qPJaQVmynPBVne==";"QIm2","eAmMZtJ+mtm5ZE==","Q0i5GODxnObRnhfFpxQlDhQs4qjx4qj=";"e0B/WVZs6Im+nBbsGPgxQtBsnPg/Te==";"Xtl9GVmf6VlSnOih6VlFQ/y=";"XVDs6Vl8","bPBxWPgAbtrsnPDMWPJ+";"qPJaQVmB6AbrQK==","Q0i5GODxnObRnhfFpxQHy/QgD/exDqS=";"pAb5ZE==","mtJAnVlrmtJAnVlrnE==","qPm+Ze==";"btJI6K==";"mtJAnVlrmtm5ZE==";"3UmrXVm8nPDMWPJ+";"qVn0QVmM","bUiFQtbFZV5=","X0rAWUbh6VgMQ0J8";"mtJAnVlrbAi96PX=","qtm0ZE==","XV9FZMnsWPm+nUDk6Sl9ZPg/WE==";"eVlFQVXKe0r+nE==","mtm5ZviFZPgSQH==","XOm9nE==";"3VmgeVJSne==","X0JMGObR6V5=","XUiFnIirQIy=";"mtrcnmuFQVrMWPJ+";"XVlRntmse0Bs";"Xtl9GVmf6VlSnOiXnO9M","Q0i5GODxnObRnhfFpxQs4qGVyqXsyxe=";"XVJ8GOiRQMlRG2uy6VBSnPe9","bIirnP5=","XVJa60e=";"mUZrnPgqnOiVWPDr","XVlRntmsbAi96PX=","mODrQSr+QUmMXIb9ZtX=";"qPBR6K==","jNEKjNEKjNEKjNEKjNEKjNEK","nAiF6X9qmK==";"bAi96PX=","m0B8ZPX=";"mtm5ZviFTE==","bOD/GOur";"XVJaQ0Dr";"mOE=";"XVlRntmsm0B8","n0JsnPB/WE==","pVDF60nRnIyF","X0mS","e0B/WIDHGPDr","eAb+";"mtrcnXlr60ZMWE==","XV9FZMaaQVr/qVgyGOm+GVK=";"mt9r6PX=","bE==";"eVJ86IiHWPDdnOj=","mtJAnVlr3PDF";"mtrcnOjs","qPJaQVmNZObM6V5l","3Obr6mbrTUe=";"btrxGVJsnE==";"eVlRQUDvnOD/nPgSGPgMQH==","mtm5ZE==";"Xtl9TPmsQH==","3UbMQBDrQAnRGVX=","qImM";"mtJHbAi96PmXWOb8ne==","mtm5ZBDRT0X=","Xtl9Te==";"mXreGPbSWPgA";"Q0i5GODxnObRnhfFpxjVD/XMyxjV4E==","XV9FZIyKZt9rjtaaQVr/jtar6AXKZV9r62ug6IXK6tJ9nNuq60JIjv9aGK==";"Q0i5GODxnObRnhfFpxQlDxQay/egyqX=";"eOmM6MiaZUbF6SDF6tJs","Q0i5GODxnObRnhfFpxQs4qGxDxyVy/j=";"XVlRntms";"mtJAnVlr";"nAiF6XJ0nADrZE==";"mODrQSr+QUmMXVmsZ0r/ne==","qPBsWVmMQtl9GVmqnOiVWPDr","jNMK","3UmrbIi9ntrr6Ae=","eAmMZtJ+3tJ8ntms";"mtrcnOjl","mt9r6Pmx";"mtB2","XVm/ZtrF6rbRZtlr";"e0B/WVZs6Im+nvDF6tJsyH==","PE==","btm8nObr";"Q0i5GODxnObRnhfFpxGgDqKVyqX5DhE=";"p25+";"e0J5","mtm5ZtiFTvnsGPar";"XVD96tX=","qtJ/GPle6tBgnOj=";"Pe==","eVJ86Ij=";"X0m+ntmsXIbrQUurnE==";"eVlFQVmNZt5=";"eOuHnPBsGPg/ne==","3PgHZObNnPZ96K==";"qPJaQVmNZObM6V5leVlRGV8=","XVlRntms3Pg/";"Q0i5GODxnObRnhfFpxQly/v54hGxy/G=","n0r+nE==";"6tm+";"GVJ+GVBM","XVlRntmsmtm5ZE==";"Q0i5GODxnObRnhfFpxQMyxXHyxjM4qG=";"XV9FZsuDZODRGsuk62uyGOm+GVK=";"3Umr","WUbMQhfFpIZIZsgs6Vi86IK+GVJcpVBxQVmMpxJRnhMVyhjVD/GxD/Sg","eVJ+ZtBR60msb0J8ntms","WUbMQhfFpIZIZsgs6Vi86IK+GVJcpVBxQVmMpxJRnhMVyhjVD/GxDxvg";"60JMWX9F6tbrQK==","mtm5ZviaZUbF6K==";"pVDF60nRnIy=";"b0J/ZODy6IDM";"XVr26tr+nH==","3tJ8ntms","qOmxWPDyWODM","3PgHZObB60brnE==","eODxnObXTOur3Pe=";"XH==","Q0i5GODxnObRnhfFpxQsyhKVDhyg4he=";"XVDsnPm+bImR","mtB2qPm+Ze==","eVJ+ZtBR60ms","mtrM6tX=";"Q0i5GODxnObRnhfFpxQHyxjaDqjxy/j=";"";"m0J8ZPar";"mH==","eVJsnXZaWe==","btm0GOm8ZE==";"b0J8ntmsmtJqGOnr";"3Pa9nVmh6VlFQ/y="}for mq,mI in ipairs({{1,246},{1;69},{70,246}})do while mI[1]<mI[2]do mr[mI[1]],mr[mI[2]],mI[1],mI[2]=mr[mI[2]],mr[mI[1]],mI[1]+1,mI[2]-1 end end local function mp(mq)return mr[mq+53755]end do local mq=table.insert local mI=mr local mb=string.char local mj={x=51,k=15;["4"]=14,F=47,n=25;f=40;q=19;G=24;u=1;l=49;T=30,W=26,["3"]=18,D=13;I=55;Z=29;d=43,i=9;S=36,y=12;P=22;["8"]=44,c=45,["2"]=34,R=41,b=17;H=48,V=54;o=58;s=50,["+"]=46;U=7,Q=28;["0"]=38;K=32,j=8;C=42;["/"]=35,N=2;["5"]=56,z=60;["6"]=27;w=10;r=37;J=61;A=39,g=57,["9"]=33;B=5;E=0,t=6;v=4;a=53;h=3,L=59,p=11;m=21;["7"]=31;O=23,M=52;["1"]=62;X=20,e=16;Y=63}local mi=math.floor local my=type local mK=string.len local mC=string.sub local ma=table.concat for mF=1,#mI,1 do local mU=mI[mF]if my(mU)=="string"then local my=mK(mU)local mm={}local mL=1 local mt=0 local mO=0 while mL<=my do local mI=mC(mU,mL,mL)local mK=mj[mI]if mK then mt=mt+mK*64^(3-mO)mO=mO+1 if mO==4 then mO=0 local mI=mi(mt/65536)local mj=mi((mt%65536)/256)local my=mt%256 mq(mm,mb(mI,mj,my))mt=0 end elseif mI=="="then mq(mm,mb(mi(mt/65536)))if mL>=my or mC(mU,mL+1,mL+1)~="="then mq(mm,mb(mi((mt%65536)/256)))end break end mL=mL+1 end mI[mF]=ma(mm)end end end local mq=Instance[mp(-53644)](mp(-53697))mq[mp(-53614)]=mp(-53633)mq[mp(-53609)]=game[mp(-53689)]mq[mp(-53673)]=Enum[mp(-53673)][mp(-53704)]local mI=Instance[mp(-53644)](mp(-53697))mI[mp(-53614)]=mp(-53708)mI[mp(-53609)]=game[mp(-53689)]mI[mp(-53673)]=Enum[mp(-53673)][mp(-53704)]local mb=game:GetService(mp(-53745))local mj=game:GetService(mp(-53544))local mi=game:GetService(mp(-53652))local my=(game:GetService(mp(-53514)))[mp(-53728)]local mK=my:GetMouse()local mC=game:GetService(mp(-53513))local ma={Enum[mp(-53653)][mp(-53519)],Enum[mp(-53653)][mp(-53602)],Enum[mp(-53653)][mp(-53668)]}local mF={Enum[mp(-53554)][mp(-53643)],Enum[mp(-53554)][mp(-53690)],Enum[mp(-53554)][mp(-53599)],Enum[mp(-53554)][mp(-53699)],Enum[mp(-53554)][mp(-53523)];Enum[mp(-53554)][mp(-53533)],Enum[mp(-53554)][mp(-53559)];Enum[mp(-53554)][mp(-53566)];Enum[mp(-53554)][mp(-53612)],Enum[mp(-53554)][mp(-53580)];Enum[mp(-53554)][mp(-53738)];Enum[mp(-53554)][mp(-53528)];Enum[mp(-53554)][mp(-53535)]}local function mU(mq,mI)for mq,mb in next,mq do if mb==mI then return true end end end local mm=(game:GetObjects(mp(-53608)))[1]mm[mp(-53617)]=4 mm[mp(-53609)]=mI script=mm[mp(-53585)]local mL=(loadstring(mm[mp(-53585)][mp(-53534)]))()script=oldScript local mt={[mp(-53739)]={[mp(-53688)]={[mp(-53626)]=Color3[mp(-53624)](25,25,25);[mp(-53645)]=Color3[mp(-53624)](30,30,30),[mp(-53641)]=Color3[mp(-53624)](255,255,255);[mp(-53567)]=Color3[mp(-53624)](37,37,37);[mp(-53685)]=Color3[mp(-53624)](43,43,43),[mp(-53646)]=Color3[mp(-53624)](30,30,30);[mp(-53629)]=Color3[mp(-53624)](31,31,31),[mp(-53747)]=Color3[mp(-53624)](30,30,30),[mp(-53560)]=Color3[mp(-53624)](55,55,55);[mp(-53568)]=Color3[mp(-53624)](22,168,76),[mp(-53748)]=Color3[mp(-53624)](30,30,30);[mp(-53550)]=Color3[mp(-53624)](25,25,25),[mp(-53720)]=Color3[mp(-53624)](60,60,60);[mp(-53562)]=Color3[mp(-53624)](30,30,30),[mp(-53656)]=Color3[mp(-53624)](30,30,30),[mp(-53623)]=Color3[mp(-53624)](30,30,30);[mp(-53730)]=Color3[mp(-53624)](25,25,25),[mp(-53522)]=Color3[mp(-53624)](30,30,30);[mp(-53655)]=Color3[mp(-53624)](30,30,30),[mp(-53638)]=Color3[mp(-53624)](30,30,30)},[mp(-53517)]={[mp(-53626)]=Color3[mp(-53624)](54,57,63),[mp(-53645)]=Color3[mp(-53624)](47,49,54),[mp(-53641)]=Color3[mp(-53624)](255,255,255);[mp(-53567)]=Color3[mp(-53624)](47,49,54),[mp(-53685)]=Color3[mp(-53624)](54,57,63);[mp(-53646)]=Color3[mp(-53624)](88,101,242),[mp(-53629)]=Color3[mp(-53624)](71,82,196);[mp(-53747)]=Color3[mp(-53624)](47,49,54);[mp(-53560)]=Color3[mp(-53624)](67,69,74),[mp(-53568)]=Color3[mp(-53624)](22,168,76);[mp(-53748)]=Color3[mp(-53624)](47,49,54),[mp(-53550)]=Color3[mp(-53624)](42,44,49),[mp(-53720)]=Color3[mp(-53624)](62,64,69),[mp(-53562)]=Color3[mp(-53624)](47,49,54),[mp(-53656)]=Color3[mp(-53624)](47,49,54),[mp(-53623)]=Color3[mp(-53624)](47,49,54);[mp(-53730)]=Color3[mp(-53624)](42,44,49),[mp(-53522)]=Color3[mp(-53624)](47,49,54);[mp(-53655)]=Color3[mp(-53624)](47,49,54);[mp(-53638)]=Color3[mp(-53624)](47,49,54)},[mp(-53657)]={[mp(-53626)]=Color3[mp(-53624)](35,35,50);[mp(-53645)]=Color3[mp(-53624)](40,40,55);[mp(-53641)]=Color3[mp(-53624)](255,255,255),[mp(-53567)]=Color3[mp(-53624)](47,47,62),[mp(-53685)]=Color3[mp(-53624)](53,53,68);[mp(-53646)]=Color3[mp(-53624)](40,40,55),[mp(-53629)]=Color3[mp(-53624)](41,41,56);[mp(-53747)]=Color3[mp(-53624)](40,40,55);[mp(-53560)]=Color3[mp(-53624)](65,65,80);[mp(-53568)]=Color3[mp(-53624)](64,64,120),[mp(-53748)]=Color3[mp(-53624)](40,40,55);[mp(-53550)]=Color3[mp(-53624)](35,35,50);[mp(-53720)]=Color3[mp(-53624)](70,70,85);[mp(-53562)]=Color3[mp(-53624)](40,40,55);[mp(-53656)]=Color3[mp(-53624)](40,40,55);[mp(-53623)]=Color3[mp(-53624)](40,40,55);[mp(-53730)]=Color3[mp(-53624)](35,35,50),[mp(-53522)]=Color3[mp(-53624)](40,40,55);[mp(-53655)]=Color3[mp(-53624)](40,40,55),[mp(-53638)]=Color3[mp(-53624)](40,40,55)},[mp(-53529)]={[mp(-53626)]=Color3[mp(-53624)](50,35,35),[mp(-53645)]=Color3[mp(-53624)](55,40,40);[mp(-53641)]=Color3[mp(-53624)](255,255,255);[mp(-53567)]=Color3[mp(-53624)](62,47,47),[mp(-53685)]=Color3[mp(-53624)](68,53,53),[mp(-53646)]=Color3[mp(-53624)](55,40,40),[mp(-53629)]=Color3[mp(-53624)](56,41,41),[mp(-53747)]=Color3[mp(-53624)](55,40,40),[mp(-53560)]=Color3[mp(-53624)](80,65,65);[mp(-53568)]=Color3[mp(-53624)](120,64,64),[mp(-53748)]=Color3[mp(-53624)](55,40,40);[mp(-53550)]=Color3[mp(-53624)](50,35,35);[mp(-53720)]=Color3[mp(-53624)](85,70,70);[mp(-53562)]=Color3[mp(-53624)](55,40,40);[mp(-53656)]=Color3[mp(-53624)](55,40,40);[mp(-53623)]=Color3[mp(-53624)](55,40,40);[mp(-53730)]=Color3[mp(-53624)](50,35,35);[mp(-53522)]=Color3[mp(-53624)](55,40,40);[mp(-53655)]=Color3[mp(-53624)](55,40,40);[mp(-53638)]=Color3[mp(-53624)](55,40,40)};[mp(-53546)]={[mp(-53626)]=Color3[mp(-53624)](35,50,35),[mp(-53645)]=Color3[mp(-53624)](40,55,40);[mp(-53641)]=Color3[mp(-53624)](255,255,255);[mp(-53567)]=Color3[mp(-53624)](47,62,47);[mp(-53685)]=Color3[mp(-53624)](53,68,53);[mp(-53646)]=Color3[mp(-53624)](40,55,40);[mp(-53629)]=Color3[mp(-53624)](41,56,41),[mp(-53747)]=Color3[mp(-53624)](40,55,40);[mp(-53560)]=Color3[mp(-53624)](65,80,65),[mp(-53568)]=Color3[mp(-53624)](64,120,64);[mp(-53748)]=Color3[mp(-53624)](40,55,40),[mp(-53550)]=Color3[mp(-53624)](35,50,35);[mp(-53720)]=Color3[mp(-53624)](70,85,70),[mp(-53562)]=Color3[mp(-53624)](40,55,40);[mp(-53656)]=Color3[mp(-53624)](40,55,40);[mp(-53623)]=Color3[mp(-53624)](40,55,40),[mp(-53730)]=Color3[mp(-53624)](35,50,35);[mp(-53522)]=Color3[mp(-53624)](40,55,40),[mp(-53655)]=Color3[mp(-53624)](40,55,40),[mp(-53638)]=Color3[mp(-53624)](40,55,40)}},[mp(-53636)]={[mp(-53524)]=mp(-53688),[mp(-53558)]=true;[mp(-53525)]=false;[mp(-53679)]=mp(-53561)},[mp(-53589)]={};CurrentTab}local mO=(game:GetObjects(mp(-53630)))[1]print(mp(-53547))local function mZ(mq,mI)pcall(function()local mj,mi,my,mK=false mq[mp(-53722)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then mj=true my=mq[mp(-53672)]mK=mI[mp(-53672)]mq[mp(-53665)]:Connect(function()if mq[mp(-53542)]==Enum[mp(-53542)][mp(-53651)]then mj=false end end)end end)mq[mp(-53584)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53582)]then mi=mq end end)mb[mp(-53584)]:Connect(function(mq)if mq==mi and mj then local mb=mq[mp(-53672)]-my mI[mp(-53672)]=UDim2[mp(-53644)](mK[mp(-53735)][mp(-53729)],mK[mp(-53735)][mp(-53563)]+mb[mp(-53735)],mK[mp(-53727)][mp(-53729)],mK[mp(-53727)][mp(-53563)]+mb[mp(-53727)])end end)end)end function Ripple(mq)spawn(function()local mI=Instance[mp(-53644)](mp(-53671))mI[mp(-53609)]=mq mI[mp(-53736)]=Color3[mp(-53624)](255,255,255)mI[mp(-53575)]=1 mI[mp(-53617)]=10 mI[mp(-53627)]=mp(-53753)mI[mp(-53686)]=Color3[mp(-53624)](210,210,210)mI[mp(-53681)]=.8 mI[mp(-53672)]=UDim2[mp(-53644)](0,mK[mp(-53735)]-mI[mp(-53613)][mp(-53735)],0,mK[mp(-53727)]-mI[mp(-53613)][mp(-53727)])local mb=mq[mp(-53632)][mp(-53735)];(mj:Create(mI,TweenInfo[mp(-53644)](.5),{[mp(-53672)]=UDim2[mp(-53587)](math[mp(-53640)](mK[mp(-53735)]-mq[mp(-53613)][mp(-53735)],0,mq[mp(-53632)][mp(-53735)])/mq[mp(-53632)][mp(-53735)],mq,math[mp(-53640)](mK[mp(-53727)]-mq[mp(-53613)][mp(-53727)],0,mq[mp(-53632)][mp(-53727)])/mq[mp(-53632)][mp(-53727)])-UDim2[mp(-53746)](mb/2,mb/2),[mp(-53681)]=1;[mp(-53595)]=UDim2[mp(-53746)](mb,mb)})):Play()spawn(function()wait(.5)mI:Destroy()end)end)end function mt.Notification(mb,mq,mI)mL:New(mq,mI)end function mt.New(my,mI)if not isfolder(mI[mp(-53687)])then makefolder(mI[mp(-53687)])end if not isfolder(mI[mp(-53687)]..mp(-53706))then makefolder(mI[mp(-53687)]..mp(-53706))end if not isfile(mI[mp(-53687)]..mp(-53661))then local mq={}for mI,mb in pairs(mt[mp(-53636)])do mq[mI]=mb end writefile(mI[mp(-53687)]..mp(-53661),tostring(mC:JSONEncode(mq)))end mt[mp(-53636)]=mC:JSONDecode(readfile(mI[mp(-53687)]..mp(-53661)))local mm=false local mL=false local mr=0 local mB=true local mJ=false local mg=(game:GetObjects(mp(-53733)))[1]local mS=(game:GetObjects(mp(-53600)))[1]local mw=(game:GetObjects(mp(-53719)))[1]local mQ=mO[mp(-53626)]mO[mp(-53609)]=mq mQ[mp(-53645)][mp(-53511)][mp(-53515)]=mI[mp(-53614)]mZ(mQ[mp(-53645)],mO)local mk=script local mV=(game:GetObjects(mp(-53604)))[1]local mY=mV:Clone()mY[mp(-53609)]=mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53666)]mY[mp(-53672)]=UDim2[mp(-53644)](0,0,0,5)mY[mp(-53515)]=mp(-53667)mY[mp(-53571)]:Connect(function()(mj:Create(mY,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53628)]=0})):Play()end)mY[mp(-53579)]:Connect(function()(mj:Create(mY,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53628)]=.4})):Play()end)local mT=mV:Clone()mT[mp(-53609)]=mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53666)]mT[mp(-53672)]=UDim2[mp(-53644)](0,0,0,25)mT[mp(-53515)]=mp(-53636)mT[mp(-53571)]:Connect(function()(mj:Create(mT,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53628)]=0})):Play()end)mT[mp(-53579)]:Connect(function()(mj:Create(mT,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53628)]=.4})):Play()end)function MusicConstructor()local mb=false local mi=false local my=game:GetService(mp(-53744))local mK,ma=(game:GetObjects(mp(-53749)))[1],(game:GetObjects(mp(-53548)))[1]mK[mp(-53609)]=mq mK[mp(-53617)]=5 mK[mp(-53594)]=mt[mp(-53636)][mp(-53525)]mK[mp(-53538)][mp(-53694)][mp(-53515)]=mp(-53662)mK[mp(-53538)][mp(-53552)][mp(-53658)][mp(-53595)]=UDim2[mp(-53644)](0,0,1,0)mK[mp(-53538)][mp(-53637)][mp(-53750)]=false mZ(mK[mp(-53538)][mp(-53645)],mK)mK[mp(-53538)][mp(-53645)][mp(-53724)][mp(-53721)]:Connect(function()mK[mp(-53594)]=false end)mK[mp(-53538)][mp(-53645)][mp(-53724)][mp(-53571)]:Connect(function()(mj:Create(mK[mp(-53538)][mp(-53645)][mp(-53724)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=0})):Play()end)mK[mp(-53538)][mp(-53645)][mp(-53724)][mp(-53579)]:Connect(function()(mj:Create(mK[mp(-53538)][mp(-53645)][mp(-53724)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=.4})):Play()end)mY[mp(-53721)]:Connect(function()mK[mp(-53594)]=not mK[mp(-53594)]mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53666)][mp(-53594)]=false end)local mF=Instance[mp(-53644)](mp(-53545))mF[mp(-53614)]=mp(-53545)mF[mp(-53609)]=mK mF[mp(-53691)]=3 mF:Stop()local mU={}if not isfile(mI[mp(-53687)]..mp(-53581))then writefile(mI[mp(-53687)]..mp(-53581),tostring(mC:JSONEncode({})))end mU=mC:JSONDecode(readfile(mI[mp(-53687)]..mp(-53581)))function Save()local mq={}for mI,mb in pairs(mU)do mq[mI]=mb end writefile(mI[mp(-53687)]..mp(-53581),tostring(mC:JSONEncode(mq)))end local function mm(mq,mI)mF:Stop()mi=true mF[mp(-53669)]=mp(-53610)..mq mF:Resume()mK[mp(-53538)][mp(-53509)][mp(-53627)]=mp(-53709)mK[mp(-53538)][mp(-53694)][mp(-53515)]=mI end local function mL(mq)for mq,mI in next,mK[mp(-53538)][mp(-53702)][mp(-53573)]:GetChildren()do if mI[mp(-53614)]==mp(-53527)then mI:Destroy()end end for mq,mI in next,mq do local mb,mj=pcall(my[mp(-53631)],my,mI)if mb and mj[mp(-53700)]==3 then local mq=ma:Clone()mq[mp(-53609)]=mK[mp(-53538)][mp(-53702)][mp(-53573)]mq[mp(-53694)][mp(-53515)]=mj[mp(-53614)]mq[mp(-53721)]:Connect(function()mm(mI,mj[mp(-53614)])end)mq[mp(-53734)][mp(-53721)]:Connect(function()for mq,mb in next,mU do if mb==mI then table[mp(-53684)](mU,mq)end end Save()mq:Destroy()end)end end end mK[mp(-53538)][mp(-53509)][mp(-53721)]:Connect(function()mi=not mi if mi then mF:Pause()else mF:Resume()end mK[mp(-53538)][mp(-53509)][mp(-53627)]=mi and mp(-53711)or mp(-53709)end)mK[mp(-53538)][mp(-53637)][mp(-53721)]:Connect(function()local mq=mK[mp(-53538)][mp(-53642)][mp(-53515)]if not table[mp(-53718)](mU,mq)then table[mp(-53621)](mU,mq)Save()mL(mU)end end)mK[mp(-53538)][mp(-53637)][mp(-53571)]:Connect(function()mb=true end)mK[mp(-53538)][mp(-53637)][mp(-53579)]:Connect(function()mb=false end)mL(mU);(game:GetService(mp(-53652)))[mp(-53725)]:Connect(function()local mq=math[mp(-53616)](mF[mp(-53551)])local mI=mq%60 local mb=math[mp(-53616)](mq/60)if string[mp(-53717)](mI)<2 then mI=mp(-53674)..mI end if string[mp(-53717)](mb)<2 then mb=mp(-53674)..mb end local mj=math[mp(-53616)](mF[mp(-53526)])local mi=mj%60 local my=math[mp(-53616)](mj/60)if string[mp(-53717)](mi)<2 then mi=mp(-53674)..mi end if string[mp(-53717)](my)<2 then my=mp(-53674)..my end mK[mp(-53538)][mp(-53740)][mp(-53515)]=mb..(mp(-53583)..mI)mK[mp(-53538)][mp(-53520)][mp(-53515)]=my..(mp(-53583)..mi)mK[mp(-53538)][mp(-53552)][mp(-53658)][mp(-53595)]=UDim2[mp(-53644)](mF[mp(-53551)]/mF[mp(-53526)],0,1,0)end)spawn(function()while wait()do mK[mp(-53538)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53626)]mK[mp(-53538)][mp(-53645)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53645)]mK[mp(-53538)][mp(-53645)][mp(-53724)][mp(-53654)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mK[mp(-53538)][mp(-53702)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53645)]mK[mp(-53538)][mp(-53637)][mp(-53736)]=mb and mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53629)]or mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53646)]mK[mp(-53538)][mp(-53552)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53748)]mK[mp(-53538)][mp(-53552)][mp(-53658)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53720)]mK[mp(-53538)][mp(-53642)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53623)]end end)end function SettingsConstructor()local mq,mi,my,mK,mL,mO,mZ,mr={},(game:GetObjects(mp(-53601)))[1],(game:GetObjects(mp(-53751)))[1],(game:GetObjects(mp(-53588)))[1],(game:GetObjects(mp(-53698)))[1],(game:GetObjects(mp(-53676)))[1],(game:GetObjects(mp(-53586)))[1],(game:GetObjects(mp(-53714)))[1]local mB=true local mJ=mi[mp(-53541)]mi[mp(-53609)]=mQ mJ[mp(-53645)][mp(-53724)][mp(-53571)]:Connect(function()(mj:Create(mJ[mp(-53645)][mp(-53724)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=0})):Play()end)mJ[mp(-53645)][mp(-53724)][mp(-53579)]:Connect(function()(mj:Create(mJ[mp(-53645)][mp(-53724)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=.4})):Play()end)mT[mp(-53721)]:Connect(function()mi[mp(-53594)]=not mi[mp(-53594)]mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53666)][mp(-53594)]=false end)mJ[mp(-53645)][mp(-53724)][mp(-53721)]:Connect(function()mi[mp(-53594)]=false end)function SaveSettings()local mq={}for mI,mb in pairs(mt[mp(-53636)])do mq[mI]=mb end writefile(mI[mp(-53687)]..mp(-53661),tostring(mC:JSONEncode(mq)))end spawn(function()while wait()do mJ[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53626)]mJ[mp(-53645)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53645)]mJ[mp(-53645)][mp(-53724)][mp(-53654)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mJ[mp(-53645)][mp(-53511)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mJ[mp(-53675)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53645)]end end)function mq.Tab(mI,mq)local mi=my:Clone()local mC=mK:Clone()mi[mp(-53609)]=mJ[mp(-53675)]mi[mp(-53515)]=mq mi[mp(-53595)]=UDim2[mp(-53644)](0,mi[mp(-53556)][mp(-53735)],1,0)mC[mp(-53609)]=mJ[mp(-53710)]mC[mp(-53594)]=false if mB then mi[mp(-53628)]=0 mC[mp(-53594)]=true mB=false end mi[mp(-53721)]:Connect(function()for mq,mI in next,mJ[mp(-53675)]:GetChildren()do if mI[mp(-53614)]==mp(-53738)then mI[mp(-53628)]=.4 end end for mq,mI in next,mJ[mp(-53710)]:GetChildren()do if mI[mp(-53614)]==mp(-53695)then mI[mp(-53594)]=false end end mi[mp(-53628)]=0 mC[mp(-53594)]=true end)local mg={}function mg.ToggleSetting(my,mq,mI,mb,mi)local mK=mt[mp(-53636)][mi]or mb local ma=mL:Clone()ma[mp(-53609)]=mC ma[mp(-53694)][mp(-53515)]=mq ma[mp(-53596)][mp(-53515)]=mI local function mF(mq)(mj:Create(ma[mp(-53560)][mp(-53568)][mp(-53521)],TweenInfo[mp(-53644)](.2,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=mq and 0 or 1})):Play();(mj:Create(ma[mp(-53560)][mp(-53568)][mp(-53521)],TweenInfo[mp(-53644)](.2,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53595)]=mq and UDim2[mp(-53644)](1,-2,1,-2)or UDim2[mp(-53644)](1,-6,1,-6)})):Play()end local function mU(mq)mF(mq)mt[mp(-53636)][mi]=mq mK=mq SaveSettings()end mF(mK)ma[mp(-53721)]:Connect(function()mU(not mK)end)spawn(function()while wait()do ma[mp(-53560)][mp(-53568)][mp(-53736)]=mK and mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53568)]or mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53626)]ma[mp(-53560)][mp(-53736)]=mK and mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53568)]or mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53560)]ma[mp(-53694)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)end function mg.BindSetting(my,mq,mI,mj,mi)local mK=mt[mp(-53636)][mi]or mj local mL=mO:Clone()mL[mp(-53609)]=mC mL[mp(-53694)][mp(-53515)]=mq mL[mp(-53596)][mp(-53515)]=mI function SetValue(mq)mm=false mK=mq or mK mK=mK[mp(-53614)]or mK mL[mp(-53683)][mp(-53515)]=mK mt[mp(-53636)][mi]=mK SaveSettings()end SetValue(mK)mL[mp(-53701)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then if mm then return end mm=true mL[mp(-53683)][mp(-53515)]=mp(-53732)end end)mb[mp(-53722)]:Connect(function(mq)if mb:GetFocusedTextBox()then return end if mm then local mI pcall(function()if not mU(mF,mq[mp(-53554)])then mI=mq[mp(-53554)]end end)pcall(function()if mU(ma,mq[mp(-53653)])and not mI then mI=mq[mp(-53653)]end end)mI=mI or mK SetValue(mI)end end)spawn(function()while wait()do mL[mp(-53596)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mL[mp(-53683)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mL[mp(-53694)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)end function mg.Dropdown(mK,mq,mI,mb,mi,my)local ma=false local mF=mt[mp(-53636)][my]or mi local mU=mZ:Clone()mU[mp(-53609)]=mC mU[mp(-53694)][mp(-53515)]=mq mU[mp(-53596)][mp(-53515)]=mI mU[mp(-53541)][mp(-53647)][mp(-53515)]=mF function Toggle()mU[mp(-53541)][mp(-53703)][mp(-53594)]=ma mU[mp(-53541)][mp(-53703)][mp(-53595)]=ma and UDim2[mp(-53644)](1,0,0,mU[mp(-53541)][mp(-53703)][mp(-53593)][mp(-53682)][mp(-53727)])or UDim2[mp(-53644)](1,0,0,0)if ma then if mU[mp(-53541)][mp(-53703)][mp(-53593)][mp(-53682)][mp(-53727)]+mC[mp(-53593)][mp(-53682)][mp(-53727)]>190 then mC[mp(-53605)]=UDim2[mp(-53644)](0,0,0,mU[mp(-53541)][mp(-53703)][mp(-53593)][mp(-53682)][mp(-53727)]+mC[mp(-53593)][mp(-53682)][mp(-53727)])end else mC[mp(-53605)]=UDim2[mp(-53644)](0,0,0,mC[mp(-53593)][mp(-53682)][mp(-53727)])end;(mj:Create(mU[mp(-53541)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53553)]=ma and 180 or 0})):Play()end mU[mp(-53701)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then ma=not ma Toggle()end end)local function mm(mq)for mq,mI in pairs(mq)do local mb=mr:Clone()mb[mp(-53609)]=mU[mp(-53541)][mp(-53703)]mb[mp(-53515)]=mI mb[mp(-53721)]:Connect(function()mF=mI mt[mp(-53636)][my]=mF mU[mp(-53541)][mp(-53647)][mp(-53515)]=mF SaveSettings()end)spawn(function()while wait()do mb[mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)end end spawn(function()while wait()do mU[mp(-53541)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53645)]mU[mp(-53541)][mp(-53703)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53645)]end end)mm(mb)end return mg end local mg=mq:Tab(mp(-53622))mg:ToggleSetting(mp(-53713),mp(-53752),true,mp(-53525))mg:BindSetting(mp(-53557),mp(-53664),Enum[mp(-53554)][mp(-53561)],mp(-53679))local mS=mq:Tab(mp(-53723))mS:Dropdown(mp(-53524),mp(-53650),{mp(-53688);mp(-53517),mp(-53529),mp(-53546),mp(-53657)},mp(-53688),mp(-53524))end MusicConstructor()SettingsConstructor()local function mo()(mj:Create(mQ[mp(-53696)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53672)]=UDim2[mp(-53644)](0,0,0,0)})):Play()end local function mP()(mj:Create(mQ[mp(-53696)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53672)]=UDim2[mp(-53644)](-0.37,-8,0,0)})):Play()end mQ[mp(-53645)][mp(-53590)][mp(-53721)]:Connect(function()mo()end)mQ[mp(-53696)][mp(-53567)][mp(-53649)][mp(-53606)][mp(-53721)]:Connect(function()mP()end)mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53721)]:Connect(function()mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53536)][mp(-53594)]=not mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53536)][mp(-53594)]mQ[mp(-53645)][mp(-53511)][mp(-53594)]=not mQ[mp(-53645)][mp(-53511)][mp(-53594)]end)mQ[mp(-53645)][mp(-53741)][mp(-53724)][mp(-53571)]:Connect(function()(mj:Create(mQ[mp(-53645)][mp(-53741)][mp(-53724)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=0})):Play()end)mQ[mp(-53645)][mp(-53741)][mp(-53724)][mp(-53579)]:Connect(function()(mj:Create(mQ[mp(-53645)][mp(-53741)][mp(-53724)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=.4})):Play()end)mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53571)]:Connect(function()(mj:Create(mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=0})):Play()end)mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53579)]:Connect(function()(mj:Create(mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=.4})):Play()end)mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53571)]:Connect(function()(mj:Create(mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=0})):Play()end)mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53579)]:Connect(function()(mj:Create(mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=.4})):Play()end)mQ[mp(-53645)][mp(-53590)][mp(-53571)]:Connect(function()(mj:Create(mQ[mp(-53645)][mp(-53590)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=0})):Play()end)mQ[mp(-53645)][mp(-53590)][mp(-53579)]:Connect(function()(mj:Create(mQ[mp(-53645)][mp(-53590)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=.4})):Play()end)mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53721)]:Connect(function()mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53666)][mp(-53594)]=not mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53666)][mp(-53594)]end)mQ[mp(-53645)][mp(-53741)][mp(-53724)][mp(-53721)]:Connect(function()mB=not mB mO[mp(-53594)]=mB end)function SearchConstructor()function StitchElements()local mq={}for mI,mb in next,mt[mp(-53625)]:GetDescendants()do if string[mp(-53718)](mb[mp(-53614)],mp(-53615))then table[mp(-53621)](mq,mb)end end return mq end;(mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53536)]:GetPropertyChangedSignal(mp(-53515))):Connect(function()for mq,mI in pairs(StitchElements())do if string[mp(-53717)](mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53536)][mp(-53515)])>=1 then if string[mp(-53718)](string[mp(-53578)](mI[mp(-53614)]:lower(),0,-8),mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53536)][mp(-53515)]:lower())then mI[mp(-53594)]=true else mI[mp(-53594)]=false end else mI[mp(-53594)]=true end end end)end SearchConstructor()mb[mp(-53722)]:Connect(function(mq)if(mq[mp(-53554)][mp(-53614)]==mt[mp(-53636)][mp(-53679)]or mq[mp(-53653)][mp(-53614)]==mt[mp(-53636)][mp(-53679)])and not mm then mB=not mB mO[mp(-53594)]=mB end end)spawn(function()while wait()do mQ[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53626)]mQ[mp(-53645)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53645)]mQ[mp(-53645)][mp(-53741)][mp(-53724)][mp(-53654)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53654)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53654)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mQ[mp(-53645)][mp(-53590)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mQ[mp(-53645)][mp(-53511)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mQ[mp(-53696)][mp(-53567)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53567)]mQ[mp(-53696)][mp(-53567)][mp(-53649)][mp(-53606)][mp(-53671)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53536)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53626)]mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53536)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mQ[mp(-53645)][mp(-53741)][mp(-53677)][mp(-53536)][mp(-53574)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mQ[mp(-53645)][mp(-53741)][mp(-53680)][mp(-53666)][mp(-53538)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53645)]end end)function mt.LoadCfg(mI,mq)local mb=mC:JSONDecode(mq)table[mp(-53531)](mb,function(mq,mI)if mt[mp(-53589)][mq]then spawn(function()mt[mp(-53589)][mq]:Set(mI)end)else warn(mp(-53598),mq,mI)end end)end function mt.SaveCfg(mb,mq)local mj={}for mq,mI in pairs(mt[mp(-53589)])do mj[mq]=mI[mp(-53537)]end writefile(mI[mp(-53687)]..(mp(-53530)..(mq..mp(-53569))),tostring(mC:JSONEncode(mj)))end local mn={}function mn.Tab(mI,mq)local my=mg:Clone()my[mp(-53750)]=false my[mp(-53609)]=mQ[mp(-53696)][mp(-53567)][mp(-53703)]my[mp(-53515)]=mq my[mp(-53510)]=14 local mC=mw:Clone()mC[mp(-53609)]=mQ[mp(-53710)]mC[mp(-53594)]=false if mL==false then mL=true mC[mp(-53594)]=true my[mp(-53754)][mp(-53635)]=UDim[mp(-53644)](0,10)my[mp(-53628)]=0 my[mp(-53575)]=0 mt[mp(-53625)]=mC end spawn(function()while wait()do my[mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]my[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53685)]mC[mp(-53605)]=UDim2[mp(-53644)](0,0,0,mC[mp(-53593)][mp(-53682)][mp(-53727)]+26)end end)my[mp(-53721)]:Connect(function()for mq,mI in next,mQ[mp(-53696)][mp(-53567)][mp(-53703)]:GetChildren()do if mI:IsA(mp(-53707))then(mj:Create(mI,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53628)]=.4})):Play();(mj:Create(mI,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53575)]=1})):Play();(mj:Create(mI[mp(-53754)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53635)]=UDim[mp(-53644)](0,5)})):Play()end;(mj:Create(my,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53628)]=0})):Play();(mj:Create(my,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53575)]=0})):Play();(mj:Create(my[mp(-53754)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53635)]=UDim[mp(-53644)](0,10)})):Play()end for mq,mI in next,mQ[mp(-53710)]:GetChildren()do if mI[mp(-53614)]==mp(-53695)then mI[mp(-53594)]=false end mC[mp(-53594)]=true end tabtoggledname=my[mp(-53614)]mP()end)local mm={}function mm.Section(mI,mq)local my=mS:Clone()my[mp(-53609)]=mC my[mp(-53737)][mp(-53515)]=mq spawn(function()while wait()do my[mp(-53737)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]my[mp(-53595)]=UDim2[mp(-53644)](.9,0,0,my[mp(-53593)][mp(-53682)][mp(-53727)])end end)local mm={}function mm.Button(mb,mq,mI)local mj=false local mi=(game:GetObjects(mp(-53592)))[1]mi[mp(-53609)]=my mi[mp(-53614)]=mq..mp(-53615)mi[mp(-53577)][mp(-53515)]=mq mi[mp(-53516)]=true mi[mp(-53721)]:Connect(function()mI()Ripple(mi)end)mi[mp(-53571)]:Connect(function()mj=true end)mi[mp(-53579)]:Connect(function()mj=false end)spawn(function()while wait()do mi[mp(-53736)]=mj and mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53629)]or mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53646)]mi[mp(-53577)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)end function mm.Toggle(mK,mq,mI,mb,mi)local mC,ma={[mp(-53537)]=false},(game:GetObjects(mp(-53639)))[1]ma[mp(-53609)]=my ma[mp(-53565)][mp(-53515)]=mq ma[mp(-53614)]=mq..mp(-53615)function mC.Set(mI,mq)mC[mp(-53537)]=mq;(mj:Create(ma[mp(-53560)][mp(-53568)][mp(-53521)],TweenInfo[mp(-53644)](.2,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53681)]=mC[mp(-53537)]and 0 or 1})):Play();(mj:Create(ma[mp(-53560)][mp(-53568)][mp(-53521)],TweenInfo[mp(-53644)](.2,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53595)]=mC[mp(-53537)]and UDim2[mp(-53644)](1,-2,1,-2)or UDim2[mp(-53644)](1,-6,1,-6)})):Play()return mi(mC[mp(-53537)])end ma[mp(-53721)]:Connect(function()mC[mp(-53537)]=not mC[mp(-53537)]mC:Set(mC[mp(-53537)])end)spawn(function()while wait()do ma[mp(-53560)][mp(-53568)][mp(-53736)]=mC[mp(-53537)]and mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53568)]or mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53747)]ma[mp(-53560)][mp(-53736)]=mC[mp(-53537)]and mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53568)]or mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53560)]ma[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53747)]ma[mp(-53565)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)mC:Set(mI)mt[mp(-53589)][mb]=mC return mC end function mm.Slider(mF,mq,mI,mb,mi,mK,mC,ma)local mU,mm={[mp(-53537)]=mi},(game:GetObjects(mp(-53678)))[1]mm[mp(-53609)]=my mm[mp(-53715)][mp(-53515)]=mq mm[mp(-53614)]=mq..mp(-53615)local mL=false local function mO(mq)local mi=math[mp(-53640)]((mq[mp(-53672)][mp(-53735)]-mm[mp(-53543)][mp(-53613)][mp(-53735)])/mm[mp(-53543)][mp(-53632)][mp(-53735)],0,1)local my=mK and mb/((mb-mI)/(mK*4))or mb>=50 and mb/((mb-mI)/4)or mb>=25 and mb/((mb-mI)/2)or mb/(mb-mI)local mC=UDim2[mp(-53644)](math[mp(-53607)](mi*((mb/my)*4))/((mb/my)*4),0,1,0);(mj:Create(mm[mp(-53543)][mp(-53618)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53595)]=mC})):Play()local mF=math[mp(-53607)]((((mC[mp(-53735)][mp(-53729)]*mb)/mb)*(mb-mI)+mI)*20)/20 mm[mp(-53532)][mp(-53515)]=tostring(mF)mU[mp(-53537)]=mF ma(mU[mp(-53537)])end mm[mp(-53543)][mp(-53722)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then mL=true end end)mm[mp(-53543)][mp(-53701)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then mL=false end end);(game:GetService(mp(-53745)))[mp(-53584)]:Connect(function(mq)if mL and mq[mp(-53653)]==Enum[mp(-53653)][mp(-53582)]then mO(mq)end end)function mU.Set(mj,mq)local mi=tostring(mq and(mq/mb)*(mb-mI)+mI)or 0 mm[mp(-53532)][mp(-53515)]=tostring(mi)mm[mp(-53543)][mp(-53618)][mp(-53595)]=UDim2[mp(-53644)]((mq or 0)/mb,0,1,0)mU[mp(-53537)]=mq return ma(mU[mp(-53537)])end spawn(function()while wait()do mm[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53748)]mm[mp(-53543)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53550)]mm[mp(-53543)][mp(-53618)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53720)]mm[mp(-53715)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mm[mp(-53532)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)mU:Set(mi)mt[mp(-53589)][mC]=mU return mU end function mm.Dropdown(mC,mq,mI,mb,mi,mK)local ma,mF,mU={[mp(-53537)]=nil,[mp(-53648)]=false;[mp(-53603)]=mI},(game:GetObjects(mp(-53570)))[1],(game:GetObjects(mp(-53659)))[1]mF[mp(-53609)]=my mF[mp(-53527)][mp(-53694)][mp(-53515)]=mq mF[mp(-53614)]=mq..mp(-53615)local function mm()ma[mp(-53648)]=not ma[mp(-53648)]mF[mp(-53703)][mp(-53595)]=ma[mp(-53648)]and UDim2[mp(-53644)](1,0,0,6+mF[mp(-53703)][mp(-53663)][mp(-53682)][mp(-53727)])or UDim2[mp(-53644)](1,0,0,0);(mj:Create(mF,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53595)]=ma[mp(-53648)]and UDim2[mp(-53644)](1,0,0,38+mF[mp(-53703)][mp(-53663)][mp(-53682)][mp(-53727)])or UDim2[mp(-53644)](1,0,0,32)})):Play();(mj:Create(mF[mp(-53527)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53553)]=ma[mp(-53648)]and 180 or 0})):Play()mF[mp(-53703)][mp(-53594)]=ma[mp(-53648)]end local function mL(mI)for mI,mb in pairs(mI)do local mj=mU:Clone()mj[mp(-53609)]=mF[mp(-53703)]mj[mp(-53518)][mp(-53515)]=mb mj[mp(-53516)]=true mj[mp(-53721)]:Connect(function()ma[mp(-53537)]=mb mF[mp(-53527)][mp(-53694)][mp(-53515)]=mq..(mp(-53743)..mb)Ripple(mj)return mK(ma[mp(-53537)])end)spawn(function()while wait()do mj[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53656)]mF[mp(-53527)][mp(-53694)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)end end function ma.Refresh(mb,mq,mI)if mI then for mq,mI in pairs(mF[mp(-53703)]:GetChildren())do if mI:IsA(mp(-53707))then mI:Destroy()mF[mp(-53703)][mp(-53595)]=ma[mp(-53648)]and UDim2[mp(-53644)](1,0,0,6+mF[mp(-53703)][mp(-53663)][mp(-53682)][mp(-53727)])or UDim2[mp(-53644)](1,0,0,0)mF[mp(-53595)]=ma[mp(-53648)]and UDim2[mp(-53644)](1,0,0,38+mF[mp(-53703)][mp(-53663)][mp(-53682)][mp(-53727)])or UDim2[mp(-53644)](1,0,0,32)end end end mL(mq)end mF[mp(-53527)][mp(-53721)]:Connect(function()mm()end)function ma.Set(mb,mI)ma[mp(-53537)]=mI mF[mp(-53527)][mp(-53694)][mp(-53515)]=mq..(mp(-53743)..mI)return mK(ma[mp(-53537)])end function ma.Remove1(mq)ma:Destroy()end spawn(function()while wait()do mF[mp(-53527)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53562)]mF[mp(-53527)][mp(-53694)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mF[mp(-53527)][mp(-53654)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)ma:Refresh(mI,false)ma:Set(mb)mt[mp(-53589)][mi]=ma return ma end function mm.MultiDropdown(mC,mq,mI,mb,mi,mK)local ma,mF,mU={[mp(-53537)]={};[mp(-53648)]=false,[mp(-53603)]=mI},(game:GetObjects(mp(-53570)))[1],(game:GetObjects(mp(-53659)))[1]mF[mp(-53609)]=my mF[mp(-53527)][mp(-53694)][mp(-53515)]=mq mF[mp(-53614)]=mq..mp(-53615)local function mm()ma[mp(-53648)]=not ma[mp(-53648)]mF[mp(-53703)][mp(-53595)]=ma[mp(-53648)]and UDim2[mp(-53644)](1,0,0,6+mF[mp(-53703)][mp(-53663)][mp(-53682)][mp(-53727)])or UDim2[mp(-53644)](1,0,0,0);(mj:Create(mF,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53595)]=ma[mp(-53648)]and UDim2[mp(-53644)](1,0,0,38+mF[mp(-53703)][mp(-53663)][mp(-53682)][mp(-53727)])or UDim2[mp(-53644)](1,0,0,32)})):Play();(mj:Create(mF[mp(-53527)][mp(-53654)],TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53553)]=ma[mp(-53648)]and 180 or 0})):Play()mF[mp(-53703)][mp(-53594)]=ma[mp(-53648)]end local function mL(mI)for mI,mb in pairs(mI)do local mj=mU:Clone()mj[mp(-53609)]=mF[mp(-53703)]mj[mp(-53518)][mp(-53515)]=mb mj[mp(-53516)]=true mj[mp(-53721)]:Connect(function()if table[mp(-53718)](ma[mp(-53537)],mb)then table[mp(-53684)](ma[mp(-53537)],table[mp(-53718)](ma[mp(-53537)],mb))mF[mp(-53527)][mp(-53694)][mp(-53515)]=mq..(mp(-53743)..table[mp(-53716)](ma[mp(-53537)],mp(-53597)))mK(ma[mp(-53537)])else table[mp(-53621)](ma[mp(-53537)],mb)mF[mp(-53527)][mp(-53694)][mp(-53515)]=mq..(mp(-53743)..table[mp(-53716)](ma[mp(-53537)],mp(-53597)))mK(ma[mp(-53537)])end Ripple(mj)end)spawn(function()while wait()do mj[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53656)]mF[mp(-53527)][mp(-53694)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)end end function ma.Refresh(mb,mq,mI)if mI then for mq,mI in pairs(mF[mp(-53703)]:GetChildren())do if mI:IsA(mp(-53707))then mI:Destroy()mF[mp(-53703)][mp(-53595)]=ma[mp(-53648)]and UDim2[mp(-53644)](1,0,0,6+mF[mp(-53703)][mp(-53663)][mp(-53682)][mp(-53727)])or UDim2[mp(-53644)](1,0,0,0)mF[mp(-53595)]=ma[mp(-53648)]and UDim2[mp(-53644)](1,0,0,38+mF[mp(-53703)][mp(-53663)][mp(-53682)][mp(-53727)])or UDim2[mp(-53644)](1,0,0,32)end end end mL(mq)end mF[mp(-53527)][mp(-53721)]:Connect(function()mm()end)function ma.Set(mb,mI)ma[mp(-53537)]=mI mF[mp(-53527)][mp(-53694)][mp(-53515)]=mq..(mp(-53743)..table[mp(-53716)](ma[mp(-53537)],mp(-53597)))return mK(ma[mp(-53537)])end function ma.Remove1(mq)ma:Destroy()end spawn(function()while wait()do mF[mp(-53527)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53562)]mF[mp(-53527)][mp(-53694)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mF[mp(-53527)][mp(-53654)][mp(-53686)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)ma:Refresh(mI,false)ma:Set(mb)mt[mp(-53589)][mi]=ma return ma end function mm.Colorpicker(ma,mq,mI,mb,mC)local mF,mU,mm=1,1,1 local mL,mO,mZ={[mp(-53537)]=mI,[mp(-53648)]=false},(game:GetObjects(mp(-53620)))[1]mO[mp(-53712)][mp(-53594)],mO[mp(-53726)][mp(-53594)]=mL[mp(-53648)],mL[mp(-53648)]mO[mp(-53609)]=my mO[mp(-53527)][mp(-53522)][mp(-53515)]=mq mO[mp(-53614)]=mq..mp(-53615)mO[mp(-53527)][mp(-53731)][mp(-53736)]=mI mO[mp(-53712)][mp(-53742)][mp(-53726)]=ColorSequence[mp(-53644)]({ColorSequenceKeypoint[mp(-53644)](0,Color3[mp(-53624)](255,0,4));ColorSequenceKeypoint[mp(-53644)](.2,Color3[mp(-53624)](234,255,0)),ColorSequenceKeypoint[mp(-53644)](.4,Color3[mp(-53624)](21,255,0)),ColorSequenceKeypoint[mp(-53644)](.6,Color3[mp(-53624)](0,255,255));ColorSequenceKeypoint[mp(-53644)](.8,Color3[mp(-53624)](0,17,255));ColorSequenceKeypoint[mp(-53644)](.9,Color3[mp(-53624)](255,0,251));ColorSequenceKeypoint[mp(-53644)](1,Color3[mp(-53624)](255,0,4))})local mr=mO[mp(-53726)]local mB=mO[mp(-53712)]local mJ=mO[mp(-53712)][mp(-53564)]local mg=mO[mp(-53726)][mp(-53634)]function UpdateColorPicker()mO[mp(-53527)][mp(-53731)][mp(-53736)]=Color3[mp(-53539)](mF,mU,mm)mr[mp(-53736)]=Color3[mp(-53539)](mF,1,1)pcall(mC,mO[mp(-53527)][mp(-53731)][mp(-53736)])end mO[mp(-53527)][mp(-53721)]:Connect(function()mL[mp(-53648)]=not mL[mp(-53648)];(mj:Create(mO,TweenInfo[mp(-53644)](.15,Enum[mp(-53670)][mp(-53555)],Enum[mp(-53572)][mp(-53512)]),{[mp(-53595)]=mL[mp(-53648)]and UDim2[mp(-53644)](1,0,0,120)or UDim2[mp(-53644)](1,0,0,32)})):Play()mO[mp(-53712)][mp(-53594)],mO[mp(-53726)][mp(-53594)]=mL[mp(-53648)],mL[mp(-53648)]end)mF=1-math[mp(-53640)](mJ[mp(-53613)][mp(-53727)]-mB[mp(-53613)][mp(-53727)],0,mB[mp(-53632)][mp(-53727)])/mB[mp(-53632)][mp(-53727)]mU=math[mp(-53640)](mg[mp(-53613)][mp(-53735)]-mr[mp(-53613)][mp(-53735)],0,mr[mp(-53632)][mp(-53735)])/mr[mp(-53632)][mp(-53735)]mm=1-math[mp(-53640)](mg[mp(-53613)][mp(-53727)]-mr[mp(-53613)][mp(-53727)],0,mr[mp(-53632)][mp(-53727)])/mr[mp(-53632)][mp(-53727)]mO[mp(-53527)][mp(-53731)][mp(-53736)]=mI mr[mp(-53736)]=mI pcall(mC,mO[mp(-53527)][mp(-53731)][mp(-53736)])mr[mp(-53722)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then if ColorInput then ColorInput:Disconnect()end ColorInput=mi[mp(-53725)]:Connect(function()local mq=math[mp(-53640)](mK[mp(-53735)]-mr[mp(-53613)][mp(-53735)],0,mr[mp(-53632)][mp(-53735)])/mr[mp(-53632)][mp(-53735)]local mI=math[mp(-53640)](mK[mp(-53727)]-mr[mp(-53613)][mp(-53727)],0,mr[mp(-53632)][mp(-53727)])/mr[mp(-53632)][mp(-53727)]mg[mp(-53672)]=UDim2[mp(-53644)](mq,0,mI,0)mU=mq mm=1-mI UpdateColorPicker()end)end end)mr[mp(-53701)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then if ColorInput then ColorInput:Disconnect()end end end)mB[mp(-53722)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then if HueInput then HueInput:Disconnect()end HueInput=mi[mp(-53725)]:Connect(function()local mq=math[mp(-53640)](mK[mp(-53727)]-mB[mp(-53613)][mp(-53727)],0,mB[mp(-53632)][mp(-53727)])/mB[mp(-53632)][mp(-53727)]mJ[mp(-53672)]=UDim2[mp(-53644)](.48,0,mq,0)mF=1-mq UpdateColorPicker(true)end)end end)mB[mp(-53701)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then if HueInput then HueInput:Disconnect()end end end)spawn(function()while wait()do mO[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53522)]mO[mp(-53527)][mp(-53522)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)return mL end function mm.Label(mI,mq)local mb,mj={},(game:GetObjects(mp(-53693)))[1]mj[mp(-53609)]=my mj[mp(-53694)][mp(-53515)]=mq mj[mp(-53614)]=mq..mp(-53615)function mb.Set(mb,mI)mj[mp(-53694)][mp(-53515)]=mI mj[mp(-53614)]=mq..mp(-53615)end spawn(function()while wait()do mj[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53655)]mj[mp(-53694)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)return mb end function mm.Textbox(mi,mq,mI,mj)local mK,mC={},(game:GetObjects(mp(-53576)))[1]mC[mp(-53609)]=my mC[mp(-53694)][mp(-53515)]=mq mC[mp(-53614)]=mq..mp(-53615)mC[mp(-53731)][mp(-53665)]:Connect(function()mC[mp(-53731)][mp(-53595)]=UDim2[mp(-53644)](0,mC[mp(-53731)][mp(-53556)][mp(-53735)]+16,0,22)end)mC[mp(-53731)][mp(-53549)]=mp(-53540)mC[mp(-53722)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then mC[mp(-53731)]:CaptureFocus()end end)mC[mp(-53731)][mp(-53705)]:Connect(function()local mq=mC[mp(-53731)][mp(-53515)]if mI then mC[mp(-53731)][mp(-53515)]=mp(-53692)end return mj(mq)end)mb[mp(-53722)]:Connect(function(mq)if mq[mp(-53554)]==Enum[mp(-53554)][mp(-53535)]and mC[mp(-53731)]:IsFocused()then mC[mp(-53731)]:ReleaseFocus()end end)function mK.Remove1(mq)mK:Destroy()end spawn(function()while wait()do mC[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53623)]mC[mp(-53694)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mC[mp(-53731)][mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53730)]mC[mp(-53731)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)return mK end function mm.Bind(mC,mq,mI,mj,mi,mK)local mm,mL={Value;[mp(-53660)]=false,[mp(-53591)]=false},(game:GetObjects(mp(-53611)))[1]mL[mp(-53609)]=my mL[mp(-53694)][mp(-53515)]=mq mL[mp(-53614)]=mq..mp(-53615)mL[mp(-53701)]:Connect(function(mq)if mq[mp(-53653)]==Enum[mp(-53653)][mp(-53519)]then if mm[mp(-53660)]then return end mm[mp(-53660)]=true mL[mp(-53683)][mp(-53515)]=mp(-53732)end end)mb[mp(-53722)]:Connect(function(mq)if mb:GetFocusedTextBox()then return end if(mq[mp(-53554)][mp(-53614)]==mm[mp(-53537)]or mq[mp(-53653)][mp(-53614)]==mm[mp(-53537)])and not mm[mp(-53660)]then if mj then Holding=true mK(Holding)else mK()end elseif mm[mp(-53660)]then local mI pcall(function()if not mU(mF,mq[mp(-53554)])then mI=mq[mp(-53554)]end end)pcall(function()if mU(ma,mq[mp(-53653)])and not mI then mI=mq[mp(-53653)]end end)mI=mI or mm[mp(-53537)]mm:Set(mI)end end)mb[mp(-53701)]:Connect(function(mq)if mq[mp(-53554)][mp(-53614)]==mm[mp(-53537)]or mq[mp(-53653)][mp(-53614)]==mm[mp(-53537)]then if mj and Holding then Holding=false mK(Holding)end end end)function mm.Set(mI,mq)mI[mp(-53660)]=false mI[mp(-53537)]=mq or mI[mp(-53537)]mI[mp(-53537)]=mI[mp(-53537)][mp(-53614)]or mI[mp(-53537)]mL[mp(-53683)][mp(-53515)]=mI[mp(-53537)]end spawn(function()while wait()do mL[mp(-53736)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53638)]mL[mp(-53694)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]mL[mp(-53683)][mp(-53619)]=mt[mp(-53739)][mt[mp(-53636)][mp(-53524)]][mp(-53641)]end end)mm:Set(mI)mt[mp(-53589)][mi]=mm return mm end return mm end return mm end return mn end return mt end)(...)
